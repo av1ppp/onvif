@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package device
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_CreateStorageConfiguration forwards the call to dev.CallMethod() then parses the payload of the reply as a CreateStorageConfigurationResponse.
@@ -23,9 +21,9 @@ func Call_CreateStorageConfiguration(ctx context.Context, dev *onvif.Device, req
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.CreateStorageConfigurationResponse, errors.Annotate(err, "call")
+		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "CreateStorageConfiguration")
-		return reply.Body.CreateStorageConfigurationResponse, errors.Annotate(err, "reply")
+		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
 	}
 }

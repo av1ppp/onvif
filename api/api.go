@@ -3,16 +3,12 @@ package api
 import (
 	"io"
 	"net/http"
-	"os"
 	"path"
 	"reflect"
 	"regexp"
 	"strings"
-	"time"
 
-	"github.com/juju/errors"
-	"github.com/rs/zerolog"
-
+	"github.com/av1ppp/logx"
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/gosoap"
 	"github.com/av1ppp/onvif/networking"
@@ -21,19 +17,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	// LoggerContext is the builder of a zerolog.Logger that is exposed to the application so that
-	// options at the CLI might alter the formatting and the output of the logs.
-	LoggerContext = zerolog.
-			New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}).
-			With().Timestamp()
+// var (
+// 	// LoggerContext is the builder of a zerolog.Logger that is exposed to the application so that
+// 	// options at the CLI might alter the formatting and the output of the logs.
+// 	LoggerContext = zerolog.
+// 			New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}).
+// 			With().Timestamp()
 
-	// Logger is a zerolog logger, that can be safely used from any part of the application.
-	// It gathers the format and the output.
-	Logger = LoggerContext.Logger()
-)
+// 	// Logger is a zerolog logger, that can be safely used from any part of the application.
+// 	// It gathers the format and the output.
+// 	Logger = LoggerContext.Logger()
+// )
 
-func RunApi() {
+func RunApi(logger *logx.Logger) {
 	router := gin.Default()
 
 	router.POST("/:service/:method", func(c *gin.Context) {
@@ -47,10 +43,10 @@ func RunApi() {
 		xaddr := c.GetHeader("xaddr")
 		acceptedData, err := c.GetRawData()
 		if err != nil {
-			Logger.Debug().Err(err).Msg("Failed to get rawx data")
+			logger.Debug("failed to get rawx data", logx.Cause(err))
 		}
 
-		message, err := callNecessaryMethod(serviceName, methodName, string(acceptedData), username, pass, xaddr)
+		message, err := callNecessaryMethod(logger, serviceName, methodName, string(acceptedData), username, pass, xaddr)
 		if err != nil {
 			c.XML(http.StatusBadRequest, err.Error())
 		} else {
@@ -110,7 +106,7 @@ func RunApi() {
 	router.Run()
 }
 
-func callNecessaryMethod(serviceName, methodName, acceptedData, username, password, xaddr string) (string, error) {
+func callNecessaryMethod(logger *logx.Logger, serviceName, methodName, acceptedData, username, password, xaddr string) (string, error) {
 	var methodStruct interface{}
 	var err error
 
@@ -122,20 +118,20 @@ func callNecessaryMethod(serviceName, methodName, acceptedData, username, passwo
 	case "media":
 		methodStruct, err = getMediaStructByName(methodName)
 	default:
-		return "", errors.New("there is no such service")
+		return "", commonErrors.New("there is no such service")
 	}
 	if err != nil { //done
-		return "", errors.Annotate(err, "getStructByName")
+		return "", commonErrors.Wrap(err, "failed to get struct by name")
 	}
 
-	resp, err := xmlAnalize(methodStruct, &acceptedData)
+	resp, err := xmlAnalize(logger, methodStruct, &acceptedData)
 	if err != nil {
-		return "", errors.Annotate(err, "xmlAnalize")
+		return "", commonErrors.Wrap(err, "failed to xmlAnalize")
 	}
 
 	endpoint, err := getEndpoint(serviceName, xaddr)
 	if err != nil {
-		return "", errors.Annotate(err, "getEndpoint")
+		return "", commonErrors.Wrap(err, "failed to getEndpoint")
 	}
 
 	soap := gosoap.NewEmptySOAP()
@@ -145,12 +141,12 @@ func callNecessaryMethod(serviceName, methodName, acceptedData, username, passwo
 
 	servResp, err := networking.SendSoap(new(http.Client), endpoint, soap.String())
 	if err != nil {
-		return "", errors.Annotate(err, "SendSoap")
+		return "", commonErrors.Wrap(err, "failed to networking.SendSoap")
 	}
 
 	rsp, err := io.ReadAll(servResp.Body)
 	if err != nil {
-		return "", errors.Annotate(err, "ReadAll")
+		return "", commonErrors.Wrap(err, "failed to io.ReadAll")
 	}
 
 	servResp.Body.Close()
@@ -161,7 +157,7 @@ func callNecessaryMethod(serviceName, methodName, acceptedData, username, passwo
 func getEndpoint(service, xaddr string) (string, error) {
 	dev, err := onvif.NewDevice(onvif.DeviceParams{Xaddr: xaddr})
 	if err != nil {
-		return "", errors.Annotate(err, "NewDevice")
+		return "", commonErrors.Wrap(err, "failed to create device")
 	}
 	pkg := strings.ToLower(service)
 
@@ -181,17 +177,17 @@ func getEndpoint(service, xaddr string) (string, error) {
 	return endpoint, nil
 }
 
-func xmlAnalize(methodStruct interface{}, acceptedData *string) (*string, error) {
+func xmlAnalize(logger *logx.Logger, methodStruct interface{}, acceptedData *string) (*string, error) {
 	test := make([]map[string]string, 0)      //tags
 	testunMarshal := make([][]interface{}, 0) //data
 	var mas []string                          //idnt
 
-	soapHandling(methodStruct, &test)
+	soapHandling(logger, methodStruct, &test)
 	test = mapProcessing(test)
 
 	doc := etree.NewDocument()
 	if err := doc.ReadFromString(*acceptedData); err != nil {
-		return nil, errors.Annotate(err, "readFromString")
+		return nil, commonErrors.Wrap(err, "failed to doc.ReadFromString")
 	}
 	etr := doc.FindElements("./*")
 	xmlUnmarshal(etr, &testunMarshal, &mas)
@@ -205,7 +201,7 @@ func xmlAnalize(methodStruct interface{}, acceptedData *string) (*string, error)
 		lst := (testunMarshal)[lstIndex]
 		elemName, attr, value, err := xmlMaker(&lst, &test, lstIndex)
 		if err != nil {
-			return nil, errors.Annotate(err, "xmlMarker")
+			return nil, commonErrors.Wrap(err, "failed to xmlMaker")
 		}
 
 		if mas[lstIndex] == "Push" && lstIndex == 0 { //done
@@ -249,7 +245,7 @@ func xmlAnalize(methodStruct interface{}, acceptedData *string) (*string, error)
 
 	resp, err := document.WriteToString()
 	if err != nil {
-		return nil, errors.Annotate(err, "writeToString")
+		return nil, commonErrors.Wrap(err, "failed to WriteToString")
 	}
 
 	return &resp, nil
@@ -271,13 +267,13 @@ func xmlMaker(lst *[]interface{}, tags *[]map[string]string, lstIndex int) (stri
 					if index == 0 && lstIndex == 0 {
 						res, err := xmlProcessing(tg["XMLName"])
 						if err != nil {
-							return "", nil, "", errors.Annotate(err, "xmlProcessing")
+							return "", nil, "", commonErrors.Wrap(err, "failed to xmlProcessing(tg[\"XMLName\"])")
 						}
 						elemName = res
 					} else if index == 0 {
 						res, err := xmlProcessing(tg[conversion])
 						if err != nil {
-							return "", nil, "", errors.Annotate(err, "xmlProcessing")
+							return "", nil, "", commonErrors.Wrap(err, "failed to xmlProcessing(tg[conversion])")
 						}
 						elemName = res
 					} else {
@@ -294,7 +290,7 @@ func xmlProcessing(tg string) (string, error) {
 	r, _ := regexp.Compile(`"(.*?)"`)
 	str := r.FindStringSubmatch(tg)
 	if len(str) == 0 {
-		return "", errors.New("out of range")
+		return "", commonErrors.New("out of range")
 	}
 	attr := strings.Index(str[1], ",attr")
 	omit := strings.Index(str[1], ",omitempty")
@@ -331,7 +327,7 @@ func mapProcessing(mapVar []map[string]string) []map[string]string {
 	return mapVar
 }
 
-func soapHandling(tp interface{}, tags *[]map[string]string) {
+func soapHandling(logger *logx.Logger, tp interface{}, tags *[]map[string]string) {
 	s := reflect.ValueOf(tp).Elem()
 	typeOfT := s.Type()
 	if s.Kind() != reflect.Struct {
@@ -341,11 +337,11 @@ func soapHandling(tp interface{}, tags *[]map[string]string) {
 		f := s.Field(i)
 		tmp, ok := typeOfT.FieldByName(typeOfT.Field(i).Name)
 		if !ok {
-			Logger.Debug().Str("field", typeOfT.Field(i).Name).Msg("reflection failed")
+			logger.Debug("reflection failed", logx.String("field", typeOfT.Field(i).Name))
 		}
 		*tags = append(*tags, map[string]string{typeOfT.Field(i).Name: string(tmp.Tag)})
 		subStruct := reflect.New(reflect.TypeOf(f.Interface()))
-		soapHandling(subStruct.Interface(), tags)
+		soapHandling(logger, subStruct.Interface(), tags)
 	}
 }
 

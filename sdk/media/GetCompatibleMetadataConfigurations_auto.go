@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package media
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/media"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_GetCompatibleMetadataConfigurations forwards the call to dev.CallMethod() then parses the payload of the reply as a GetCompatibleMetadataConfigurationsResponse.
@@ -23,9 +21,9 @@ func Call_GetCompatibleMetadataConfigurations(ctx context.Context, dev *onvif.De
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.GetCompatibleMetadataConfigurationsResponse, errors.Annotate(err, "call")
+		return reply.Body.GetCompatibleMetadataConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleMetadataConfigurations")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetCompatibleMetadataConfigurations")
-		return reply.Body.GetCompatibleMetadataConfigurationsResponse, errors.Annotate(err, "reply")
+		return reply.Body.GetCompatibleMetadataConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleMetadataConfigurations")
 	}
 }

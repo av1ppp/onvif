@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package media
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/media"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_GetAudioEncoderConfigurationOptions forwards the call to dev.CallMethod() then parses the payload of the reply as a GetAudioEncoderConfigurationOptionsResponse.
@@ -23,9 +21,9 @@ func Call_GetAudioEncoderConfigurationOptions(ctx context.Context, dev *onvif.De
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.GetAudioEncoderConfigurationOptionsResponse, errors.Annotate(err, "call")
+		return reply.Body.GetAudioEncoderConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioEncoderConfigurationOptions")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetAudioEncoderConfigurationOptions")
-		return reply.Body.GetAudioEncoderConfigurationOptionsResponse, errors.Annotate(err, "reply")
+		return reply.Body.GetAudioEncoderConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioEncoderConfigurationOptions")
 	}
 }

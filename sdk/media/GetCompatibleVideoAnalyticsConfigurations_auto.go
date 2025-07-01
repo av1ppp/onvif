@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package media
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/media"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_GetCompatibleVideoAnalyticsConfigurations forwards the call to dev.CallMethod() then parses the payload of the reply as a GetCompatibleVideoAnalyticsConfigurationsResponse.
@@ -23,9 +21,9 @@ func Call_GetCompatibleVideoAnalyticsConfigurations(ctx context.Context, dev *on
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.GetCompatibleVideoAnalyticsConfigurationsResponse, errors.Annotate(err, "call")
+		return reply.Body.GetCompatibleVideoAnalyticsConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleVideoAnalyticsConfigurations")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetCompatibleVideoAnalyticsConfigurations")
-		return reply.Body.GetCompatibleVideoAnalyticsConfigurationsResponse, errors.Annotate(err, "reply")
+		return reply.Body.GetCompatibleVideoAnalyticsConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleVideoAnalyticsConfigurations")
 	}
 }

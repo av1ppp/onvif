@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package device
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_GetSystemDateAndTime forwards the call to dev.CallMethod() then parses the payload of the reply as a GetSystemDateAndTimeResponse.
@@ -23,9 +21,9 @@ func Call_GetSystemDateAndTime(ctx context.Context, dev *onvif.Device, request d
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.GetSystemDateAndTimeResponse, errors.Annotate(err, "call")
+		return reply.Body.GetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemDateAndTime")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetSystemDateAndTime")
-		return reply.Body.GetSystemDateAndTimeResponse, errors.Annotate(err, "reply")
+		return reply.Body.GetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemDateAndTime")
 	}
 }

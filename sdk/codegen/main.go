@@ -11,17 +11,16 @@ import (
 )
 
 var mainTemplate = `// Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package {{.Package}}
 
 import (
 	"context"
-	"github.com/juju/errors"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/{{.StructPackage}}"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_{{.TypeRequest}} forwards the call to dev.CallMethod() then parses the payload of the reply as a {{.TypeReply}}.
@@ -34,10 +33,10 @@ func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.St
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.{{.TypeReply}}, errors.Annotate(err, "call")
+		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "{{.TypeRequest}}")
-		return reply.Body.{{.TypeReply}}, errors.Annotate(err, "reply")
+		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	}
 }
 `

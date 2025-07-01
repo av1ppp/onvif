@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package device
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_SetIPAddressFilter forwards the call to dev.CallMethod() then parses the payload of the reply as a SetIPAddressFilterResponse.
@@ -23,9 +21,9 @@ func Call_SetIPAddressFilter(ctx context.Context, dev *onvif.Device, request dev
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.SetIPAddressFilterResponse, errors.Annotate(err, "call")
+		return reply.Body.SetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetIPAddressFilter")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetIPAddressFilter")
-		return reply.Body.SetIPAddressFilterResponse, errors.Annotate(err, "reply")
+		return reply.Body.SetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetIPAddressFilter")
 	}
 }

@@ -1,6 +1,4 @@
 // Code generated : DO NOT EDIT.
-// Copyright (c) 2022 Jean-Francois SMIGIELSKI
-// Distributed under the MIT License
 
 package device
 
@@ -8,9 +6,9 @@ import (
 	"context"
 
 	"github.com/av1ppp/onvif"
-	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/sdk"
-	"github.com/juju/errors"
+	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/errors"
 )
 
 // Call_GetDot1XConfigurations forwards the call to dev.CallMethod() then parses the payload of the reply as a GetDot1XConfigurationsResponse.
@@ -23,9 +21,9 @@ func Call_GetDot1XConfigurations(ctx context.Context, dev *onvif.Device, request
 	}
 	var reply Envelope
 	if httpReply, err := dev.CallMethod(request); err != nil {
-		return reply.Body.GetDot1XConfigurationsResponse, errors.Annotate(err, "call")
+		return reply.Body.GetDot1XConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDot1XConfigurations")
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetDot1XConfigurations")
-		return reply.Body.GetDot1XConfigurationsResponse, errors.Annotate(err, "reply")
+		return reply.Body.GetDot1XConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot1XConfigurations")
 	}
 }
