@@ -22,12 +22,17 @@ func Call_GetNodes(ctx context.Context, dev *onvif.Device, request ptz.GetNodes)
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetNodesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNodes")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetNodesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNodes")
 	}
+	return reply.Body.GetNodesResponse, nil
 }
 
 // CallWithLogging_GetNodes works like Call_GetNodes but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetNodes(ctx context.Context, logger *logx.Logger, dev *onv
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetNodesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNodes")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNodes")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNodes")
+	if err != nil {
 		return reply.Body.GetNodesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNodes")
 	}
+	return reply.Body.GetNodesResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_SystemReboot(ctx context.Context, dev *onvif.Device, request device.Sy
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SystemRebootResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SystemReboot")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SystemRebootResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SystemReboot")
 	}
+	return reply.Body.SystemRebootResponse, nil
 }
 
 // CallWithLogging_SystemReboot works like Call_SystemReboot but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SystemReboot(ctx context.Context, logger *logx.Logger, dev 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SystemRebootResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SystemReboot")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SystemReboot")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SystemReboot")
+	if err != nil {
 		return reply.Body.SystemRebootResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SystemReboot")
 	}
+	return reply.Body.SystemRebootResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_SetHomePosition(ctx context.Context, dev *onvif.Device, request ptz.Se
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHomePosition")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHomePosition")
 	}
+	return reply.Body.SetHomePositionResponse, nil
 }
 
 // CallWithLogging_SetHomePosition works like Call_SetHomePosition but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetHomePosition(ctx context.Context, logger *logx.Logger, d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHomePosition")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHomePosition")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHomePosition")
+	if err != nil {
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHomePosition")
 	}
+	return reply.Body.SetHomePositionResponse, nil
 }

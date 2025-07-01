@@ -22,12 +22,17 @@ func Call_ContinuousMove(ctx context.Context, dev *onvif.Device, request ptz.Con
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.ContinuousMoveResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ContinuousMove")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.ContinuousMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ContinuousMove")
 	}
+	return reply.Body.ContinuousMoveResponse, nil
 }
 
 // CallWithLogging_ContinuousMove works like Call_ContinuousMove but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_ContinuousMove(ctx context.Context, logger *logx.Logger, de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.ContinuousMoveResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ContinuousMove")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "ContinuousMove")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "ContinuousMove")
+	if err != nil {
 		return reply.Body.ContinuousMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ContinuousMove")
 	}
+	return reply.Body.ContinuousMoveResponse, nil
 }

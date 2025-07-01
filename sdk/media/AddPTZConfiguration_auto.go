@@ -22,12 +22,17 @@ func Call_AddPTZConfiguration(ctx context.Context, dev *onvif.Device, request me
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AddPTZConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddPTZConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.AddPTZConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddPTZConfiguration")
 	}
+	return reply.Body.AddPTZConfigurationResponse, nil
 }
 
 // CallWithLogging_AddPTZConfiguration works like Call_AddPTZConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_AddPTZConfiguration(ctx context.Context, logger *logx.Logge
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AddPTZConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddPTZConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AddPTZConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AddPTZConfiguration")
+	if err != nil {
 		return reply.Body.AddPTZConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddPTZConfiguration")
 	}
+	return reply.Body.AddPTZConfigurationResponse, nil
 }

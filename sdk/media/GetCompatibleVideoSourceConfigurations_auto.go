@@ -22,12 +22,17 @@ func Call_GetCompatibleVideoSourceConfigurations(ctx context.Context, dev *onvif
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleVideoSourceConfigurations")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleVideoSourceConfigurations")
 	}
+	return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, nil
 }
 
 // CallWithLogging_GetCompatibleVideoSourceConfigurations works like Call_GetCompatibleVideoSourceConfigurations but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetCompatibleVideoSourceConfigurations(ctx context.Context,
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleVideoSourceConfigurations")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleVideoSourceConfigurations")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleVideoSourceConfigurations")
+	if err != nil {
 		return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleVideoSourceConfigurations")
 	}
+	return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, nil
 }

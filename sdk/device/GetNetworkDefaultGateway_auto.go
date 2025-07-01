@@ -22,12 +22,17 @@ func Call_GetNetworkDefaultGateway(ctx context.Context, dev *onvif.Device, reque
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
 	}
+	return reply.Body.GetNetworkDefaultGatewayResponse, nil
 }
 
 // CallWithLogging_GetNetworkDefaultGateway works like Call_GetNetworkDefaultGateway but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetNetworkDefaultGateway(ctx context.Context, logger *logx.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNetworkDefaultGateway")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNetworkDefaultGateway")
+	if err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
 	}
+	return reply.Body.GetNetworkDefaultGatewayResponse, nil
 }

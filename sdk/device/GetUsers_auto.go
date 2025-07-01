@@ -22,12 +22,17 @@ func Call_GetUsers(ctx context.Context, dev *onvif.Device, request device.GetUse
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetUsersResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetUsers")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetUsersResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetUsers")
 	}
+	return reply.Body.GetUsersResponse, nil
 }
 
 // CallWithLogging_GetUsers works like Call_GetUsers but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetUsers(ctx context.Context, logger *logx.Logger, dev *onv
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetUsersResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetUsers")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetUsers")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetUsers")
+	if err != nil {
 		return reply.Body.GetUsersResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetUsers")
 	}
+	return reply.Body.GetUsersResponse, nil
 }

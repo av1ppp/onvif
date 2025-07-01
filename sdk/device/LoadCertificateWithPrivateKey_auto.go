@@ -22,12 +22,17 @@ func Call_LoadCertificateWithPrivateKey(ctx context.Context, dev *onvif.Device, 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.LoadCertificateWithPrivateKeyResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "LoadCertificateWithPrivateKey")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.LoadCertificateWithPrivateKeyResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "LoadCertificateWithPrivateKey")
 	}
+	return reply.Body.LoadCertificateWithPrivateKeyResponse, nil
 }
 
 // CallWithLogging_LoadCertificateWithPrivateKey works like Call_LoadCertificateWithPrivateKey but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_LoadCertificateWithPrivateKey(ctx context.Context, logger *
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.LoadCertificateWithPrivateKeyResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "LoadCertificateWithPrivateKey")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "LoadCertificateWithPrivateKey")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "LoadCertificateWithPrivateKey")
+	if err != nil {
 		return reply.Body.LoadCertificateWithPrivateKeyResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "LoadCertificateWithPrivateKey")
 	}
+	return reply.Body.LoadCertificateWithPrivateKeyResponse, nil
 }

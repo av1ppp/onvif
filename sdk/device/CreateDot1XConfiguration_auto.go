@@ -22,12 +22,17 @@ func Call_CreateDot1XConfiguration(ctx context.Context, dev *onvif.Device, reque
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
 	}
+	return reply.Body.CreateDot1XConfigurationResponse, nil
 }
 
 // CallWithLogging_CreateDot1XConfiguration works like Call_CreateDot1XConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_CreateDot1XConfiguration(ctx context.Context, logger *logx.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateDot1XConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateDot1XConfiguration")
+	if err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
 	}
+	return reply.Body.CreateDot1XConfigurationResponse, nil
 }

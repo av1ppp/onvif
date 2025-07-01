@@ -22,12 +22,17 @@ func Call_GetStreamUri(ctx context.Context, dev *onvif.Device, request media.Get
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetStreamUri")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetStreamUri")
 	}
+	return reply.Body.GetStreamUriResponse, nil
 }
 
 // CallWithLogging_GetStreamUri works like Call_GetStreamUri but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetStreamUri(ctx context.Context, logger *logx.Logger, dev 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetStreamUri")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetStreamUri")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetStreamUri")
+	if err != nil {
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetStreamUri")
 	}
+	return reply.Body.GetStreamUriResponse, nil
 }

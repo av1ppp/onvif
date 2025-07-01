@@ -22,12 +22,17 @@ func Call_GetSnapshotUri(ctx context.Context, dev *onvif.Device, request media.G
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetSnapshotUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSnapshotUri")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetSnapshotUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSnapshotUri")
 	}
+	return reply.Body.GetSnapshotUriResponse, nil
 }
 
 // CallWithLogging_GetSnapshotUri works like Call_GetSnapshotUri but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetSnapshotUri(ctx context.Context, logger *logx.Logger, de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetSnapshotUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSnapshotUri")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSnapshotUri")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSnapshotUri")
+	if err != nil {
 		return reply.Body.GetSnapshotUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSnapshotUri")
 	}
+	return reply.Body.GetSnapshotUriResponse, nil
 }

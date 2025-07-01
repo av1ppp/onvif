@@ -22,12 +22,17 @@ func Call_GetCompatibleAudioDecoderConfigurations(ctx context.Context, dev *onvi
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleAudioDecoderConfigurations")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleAudioDecoderConfigurations")
 	}
+	return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, nil
 }
 
 // CallWithLogging_GetCompatibleAudioDecoderConfigurations works like Call_GetCompatibleAudioDecoderConfigurations but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetCompatibleAudioDecoderConfigurations(ctx context.Context
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleAudioDecoderConfigurations")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleAudioDecoderConfigurations")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleAudioDecoderConfigurations")
+	if err != nil {
 		return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleAudioDecoderConfigurations")
 	}
+	return reply.Body.GetCompatibleAudioDecoderConfigurationsResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_SetHostnameFromDHCP(ctx context.Context, dev *onvif.Device, request de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetHostnameFromDHCPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHostnameFromDHCP")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetHostnameFromDHCPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHostnameFromDHCP")
 	}
+	return reply.Body.SetHostnameFromDHCPResponse, nil
 }
 
 // CallWithLogging_SetHostnameFromDHCP works like Call_SetHostnameFromDHCP but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetHostnameFromDHCP(ctx context.Context, logger *logx.Logge
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetHostnameFromDHCPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHostnameFromDHCP")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHostnameFromDHCP")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHostnameFromDHCP")
+	if err != nil {
 		return reply.Body.SetHostnameFromDHCPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHostnameFromDHCP")
 	}
+	return reply.Body.SetHostnameFromDHCPResponse, nil
 }

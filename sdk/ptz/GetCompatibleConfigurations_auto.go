@@ -22,12 +22,17 @@ func Call_GetCompatibleConfigurations(ctx context.Context, dev *onvif.Device, re
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
 	}
+	return reply.Body.GetCompatibleConfigurationsResponse, nil
 }
 
 // CallWithLogging_GetCompatibleConfigurations works like Call_GetCompatibleConfigurations but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetCompatibleConfigurations(ctx context.Context, logger *lo
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleConfigurations")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleConfigurations")
+	if err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
 	}
+	return reply.Body.GetCompatibleConfigurationsResponse, nil
 }

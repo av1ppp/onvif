@@ -22,12 +22,17 @@ func Call_SetSystemDateAndTime(ctx context.Context, dev *onvif.Device, request d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSystemDateAndTime")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSystemDateAndTime")
 	}
+	return reply.Body.SetSystemDateAndTimeResponse, nil
 }
 
 // CallWithLogging_SetSystemDateAndTime works like Call_SetSystemDateAndTime but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetSystemDateAndTime(ctx context.Context, logger *logx.Logg
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSystemDateAndTime")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSystemDateAndTime")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSystemDateAndTime")
+	if err != nil {
 		return reply.Body.SetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSystemDateAndTime")
 	}
+	return reply.Body.SetSystemDateAndTimeResponse, nil
 }

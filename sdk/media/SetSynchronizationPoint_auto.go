@@ -22,12 +22,17 @@ func Call_SetSynchronizationPoint(ctx context.Context, dev *onvif.Device, reques
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSynchronizationPointResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSynchronizationPoint")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetSynchronizationPointResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSynchronizationPoint")
 	}
+	return reply.Body.SetSynchronizationPointResponse, nil
 }
 
 // CallWithLogging_SetSynchronizationPoint works like Call_SetSynchronizationPoint but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetSynchronizationPoint(ctx context.Context, logger *logx.L
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSynchronizationPointResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSynchronizationPoint")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSynchronizationPoint")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSynchronizationPoint")
+	if err != nil {
 		return reply.Body.SetSynchronizationPointResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSynchronizationPoint")
 	}
+	return reply.Body.SetSynchronizationPointResponse, nil
 }

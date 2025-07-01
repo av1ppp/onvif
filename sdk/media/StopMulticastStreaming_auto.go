@@ -22,12 +22,17 @@ func Call_StopMulticastStreaming(ctx context.Context, dev *onvif.Device, request
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.StopMulticastStreamingResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "StopMulticastStreaming")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.StopMulticastStreamingResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StopMulticastStreaming")
 	}
+	return reply.Body.StopMulticastStreamingResponse, nil
 }
 
 // CallWithLogging_StopMulticastStreaming works like Call_StopMulticastStreaming but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_StopMulticastStreaming(ctx context.Context, logger *logx.Lo
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.StopMulticastStreamingResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "StopMulticastStreaming")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "StopMulticastStreaming")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "StopMulticastStreaming")
+	if err != nil {
 		return reply.Body.StopMulticastStreamingResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StopMulticastStreaming")
 	}
+	return reply.Body.StopMulticastStreamingResponse, nil
 }

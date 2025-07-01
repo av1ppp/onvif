@@ -22,12 +22,17 @@ func Call_AbsoluteMove(ctx context.Context, dev *onvif.Device, request ptz.Absol
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AbsoluteMoveResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AbsoluteMove")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.AbsoluteMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AbsoluteMove")
 	}
+	return reply.Body.AbsoluteMoveResponse, nil
 }
 
 // CallWithLogging_AbsoluteMove works like Call_AbsoluteMove but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_AbsoluteMove(ctx context.Context, logger *logx.Logger, dev 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AbsoluteMoveResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AbsoluteMove")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AbsoluteMove")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AbsoluteMove")
+	if err != nil {
 		return reply.Body.AbsoluteMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AbsoluteMove")
 	}
+	return reply.Body.AbsoluteMoveResponse, nil
 }

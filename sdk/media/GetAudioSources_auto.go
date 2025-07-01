@@ -22,12 +22,17 @@ func Call_GetAudioSources(ctx context.Context, dev *onvif.Device, request media.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetAudioSourcesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioSources")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetAudioSourcesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioSources")
 	}
+	return reply.Body.GetAudioSourcesResponse, nil
 }
 
 // CallWithLogging_GetAudioSources works like Call_GetAudioSources but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetAudioSources(ctx context.Context, logger *logx.Logger, d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetAudioSourcesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioSources")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioSources")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioSources")
+	if err != nil {
 		return reply.Body.GetAudioSourcesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioSources")
 	}
+	return reply.Body.GetAudioSourcesResponse, nil
 }

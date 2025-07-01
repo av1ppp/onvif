@@ -22,12 +22,17 @@ func Call_GetPkcs10Request(ctx context.Context, dev *onvif.Device, request devic
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetPkcs10Request")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPkcs10Request")
 	}
+	return reply.Body.GetPkcs10RequestResponse, nil
 }
 
 // CallWithLogging_GetPkcs10Request works like Call_GetPkcs10Request but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetPkcs10Request(ctx context.Context, logger *logx.Logger, 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetPkcs10Request")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetPkcs10Request")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetPkcs10Request")
+	if err != nil {
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPkcs10Request")
 	}
+	return reply.Body.GetPkcs10RequestResponse, nil
 }

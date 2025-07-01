@@ -22,12 +22,17 @@ func Call_SetVideoAnalyticsConfiguration(ctx context.Context, dev *onvif.Device,
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
 	}
+	return reply.Body.SetVideoAnalyticsConfigurationResponse, nil
 }
 
 // CallWithLogging_SetVideoAnalyticsConfiguration works like Call_SetVideoAnalyticsConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetVideoAnalyticsConfiguration(ctx context.Context, logger 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetVideoAnalyticsConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetVideoAnalyticsConfiguration")
+	if err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
 	}
+	return reply.Body.SetVideoAnalyticsConfigurationResponse, nil
 }

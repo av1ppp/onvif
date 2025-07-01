@@ -22,12 +22,17 @@ func Call_GetDot11Capabilities(ctx context.Context, dev *onvif.Device, request d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetDot11CapabilitiesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDot11Capabilities")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetDot11CapabilitiesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot11Capabilities")
 	}
+	return reply.Body.GetDot11CapabilitiesResponse, nil
 }
 
 // CallWithLogging_GetDot11Capabilities works like Call_GetDot11Capabilities but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetDot11Capabilities(ctx context.Context, logger *logx.Logg
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetDot11CapabilitiesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDot11Capabilities")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetDot11Capabilities")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetDot11Capabilities")
+	if err != nil {
 		return reply.Body.GetDot11CapabilitiesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot11Capabilities")
 	}
+	return reply.Body.GetDot11CapabilitiesResponse, nil
 }

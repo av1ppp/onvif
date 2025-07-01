@@ -22,12 +22,17 @@ func Call_DeleteCertificates(ctx context.Context, dev *onvif.Device, request dev
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.DeleteCertificatesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteCertificates")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.DeleteCertificatesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteCertificates")
 	}
+	return reply.Body.DeleteCertificatesResponse, nil
 }
 
 // CallWithLogging_DeleteCertificates works like Call_DeleteCertificates but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_DeleteCertificates(ctx context.Context, logger *logx.Logger
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.DeleteCertificatesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteCertificates")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "DeleteCertificates")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "DeleteCertificates")
+	if err != nil {
 		return reply.Body.DeleteCertificatesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteCertificates")
 	}
+	return reply.Body.DeleteCertificatesResponse, nil
 }

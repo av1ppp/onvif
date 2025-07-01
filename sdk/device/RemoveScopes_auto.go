@@ -22,12 +22,17 @@ func Call_RemoveScopes(ctx context.Context, dev *onvif.Device, request device.Re
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.RemoveScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveScopes")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.RemoveScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveScopes")
 	}
+	return reply.Body.RemoveScopesResponse, nil
 }
 
 // CallWithLogging_RemoveScopes works like Call_RemoveScopes but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_RemoveScopes(ctx context.Context, logger *logx.Logger, dev 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.RemoveScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveScopes")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemoveScopes")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemoveScopes")
+	if err != nil {
 		return reply.Body.RemoveScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveScopes")
 	}
+	return reply.Body.RemoveScopesResponse, nil
 }

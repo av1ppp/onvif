@@ -22,12 +22,17 @@ func Call_SendAuxiliaryCommand(ctx context.Context, dev *onvif.Device, request d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
 	}
+	return reply.Body.SendAuxiliaryCommandResponse, nil
 }
 
 // CallWithLogging_SendAuxiliaryCommand works like Call_SendAuxiliaryCommand but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SendAuxiliaryCommand(ctx context.Context, logger *logx.Logg
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SendAuxiliaryCommand")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SendAuxiliaryCommand")
+	if err != nil {
 		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
 	}
+	return reply.Body.SendAuxiliaryCommandResponse, nil
 }

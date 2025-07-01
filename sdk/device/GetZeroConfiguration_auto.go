@@ -22,12 +22,17 @@ func Call_GetZeroConfiguration(ctx context.Context, dev *onvif.Device, request d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetZeroConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetZeroConfiguration")
 	}
+	return reply.Body.GetZeroConfigurationResponse, nil
 }
 
 // CallWithLogging_GetZeroConfiguration works like Call_GetZeroConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetZeroConfiguration(ctx context.Context, logger *logx.Logg
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetZeroConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetZeroConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetZeroConfiguration")
+	if err != nil {
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetZeroConfiguration")
 	}
+	return reply.Body.GetZeroConfigurationResponse, nil
 }

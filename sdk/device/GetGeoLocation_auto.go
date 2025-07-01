@@ -22,12 +22,17 @@ func Call_GetGeoLocation(ctx context.Context, dev *onvif.Device, request device.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetGeoLocationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetGeoLocation")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetGeoLocationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetGeoLocation")
 	}
+	return reply.Body.GetGeoLocationResponse, nil
 }
 
 // CallWithLogging_GetGeoLocation works like Call_GetGeoLocation but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetGeoLocation(ctx context.Context, logger *logx.Logger, de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetGeoLocationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetGeoLocation")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetGeoLocation")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetGeoLocation")
+	if err != nil {
 		return reply.Body.GetGeoLocationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetGeoLocation")
 	}
+	return reply.Body.GetGeoLocationResponse, nil
 }

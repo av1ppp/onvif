@@ -22,12 +22,17 @@ func Call_GetSystemBackup(ctx context.Context, dev *onvif.Device, request device
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemBackup")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemBackup")
 	}
+	return reply.Body.GetSystemBackupResponse, nil
 }
 
 // CallWithLogging_GetSystemBackup works like Call_GetSystemBackup but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetSystemBackup(ctx context.Context, logger *logx.Logger, d
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemBackup")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSystemBackup")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSystemBackup")
+	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemBackup")
 	}
+	return reply.Body.GetSystemBackupResponse, nil
 }

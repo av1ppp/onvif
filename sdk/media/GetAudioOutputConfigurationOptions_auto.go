@@ -22,12 +22,17 @@ func Call_GetAudioOutputConfigurationOptions(ctx context.Context, dev *onvif.Dev
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
 	}
+	return reply.Body.GetAudioOutputConfigurationOptionsResponse, nil
 }
 
 // CallWithLogging_GetAudioOutputConfigurationOptions works like Call_GetAudioOutputConfigurationOptions but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetAudioOutputConfigurationOptions(ctx context.Context, log
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioOutputConfigurationOptions")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioOutputConfigurationOptions")
+	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
 	}
+	return reply.Body.GetAudioOutputConfigurationOptionsResponse, nil
 }

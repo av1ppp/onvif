@@ -22,12 +22,17 @@ func Call_GetOSD(ctx context.Context, dev *onvif.Device, request media.GetOSD) (
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetOSD")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetOSD")
 	}
+	return reply.Body.GetOSDResponse, nil
 }
 
 // CallWithLogging_GetOSD works like Call_GetOSD but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetOSD(ctx context.Context, logger *logx.Logger, dev *onvif
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetOSD")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetOSD")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetOSD")
+	if err != nil {
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetOSD")
 	}
+	return reply.Body.GetOSDResponse, nil
 }

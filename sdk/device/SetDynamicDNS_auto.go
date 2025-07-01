@@ -22,12 +22,17 @@ func Call_SetDynamicDNS(ctx context.Context, dev *onvif.Device, request device.S
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetDynamicDNS")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDynamicDNS")
 	}
+	return reply.Body.SetDynamicDNSResponse, nil
 }
 
 // CallWithLogging_SetDynamicDNS works like Call_SetDynamicDNS but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetDynamicDNS(ctx context.Context, logger *logx.Logger, dev
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetDynamicDNS")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetDynamicDNS")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetDynamicDNS")
+	if err != nil {
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDynamicDNS")
 	}
+	return reply.Body.SetDynamicDNSResponse, nil
 }

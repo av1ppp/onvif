@@ -22,12 +22,17 @@ func Call_SetRelayOutputState(ctx context.Context, dev *onvif.Device, request de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetRelayOutputStateResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputState")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetRelayOutputStateResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetRelayOutputState")
 	}
+	return reply.Body.SetRelayOutputStateResponse, nil
 }
 
 // CallWithLogging_SetRelayOutputState works like Call_SetRelayOutputState but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetRelayOutputState(ctx context.Context, logger *logx.Logge
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetRelayOutputStateResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputState")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetRelayOutputState")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetRelayOutputState")
+	if err != nil {
 		return reply.Body.SetRelayOutputStateResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetRelayOutputState")
 	}
+	return reply.Body.SetRelayOutputStateResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_GetGuaranteedNumberOfVideoEncoderInstances(ctx context.Context, dev *o
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetGuaranteedNumberOfVideoEncoderInstances")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetGuaranteedNumberOfVideoEncoderInstances")
 	}
+	return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, nil
 }
 
 // CallWithLogging_GetGuaranteedNumberOfVideoEncoderInstances works like Call_GetGuaranteedNumberOfVideoEncoderInstances but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetGuaranteedNumberOfVideoEncoderInstances(ctx context.Cont
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetGuaranteedNumberOfVideoEncoderInstances")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetGuaranteedNumberOfVideoEncoderInstances")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetGuaranteedNumberOfVideoEncoderInstances")
+	if err != nil {
 		return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetGuaranteedNumberOfVideoEncoderInstances")
 	}
+	return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, nil
 }

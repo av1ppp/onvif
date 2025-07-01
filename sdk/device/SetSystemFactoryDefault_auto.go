@@ -22,12 +22,17 @@ func Call_SetSystemFactoryDefault(ctx context.Context, dev *onvif.Device, reques
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSystemFactoryDefaultResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSystemFactoryDefault")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetSystemFactoryDefaultResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSystemFactoryDefault")
 	}
+	return reply.Body.SetSystemFactoryDefaultResponse, nil
 }
 
 // CallWithLogging_SetSystemFactoryDefault works like Call_SetSystemFactoryDefault but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetSystemFactoryDefault(ctx context.Context, logger *logx.L
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetSystemFactoryDefaultResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetSystemFactoryDefault")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSystemFactoryDefault")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetSystemFactoryDefault")
+	if err != nil {
 		return reply.Body.SetSystemFactoryDefaultResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetSystemFactoryDefault")
 	}
+	return reply.Body.SetSystemFactoryDefaultResponse, nil
 }

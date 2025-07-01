@@ -22,12 +22,17 @@ func Call_GetWsdlUrl(ctx context.Context, dev *onvif.Device, request device.GetW
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetWsdlUrl")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetWsdlUrl")
 	}
+	return reply.Body.GetWsdlUrlResponse, nil
 }
 
 // CallWithLogging_GetWsdlUrl works like Call_GetWsdlUrl but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetWsdlUrl(ctx context.Context, logger *logx.Logger, dev *o
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetWsdlUrl")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetWsdlUrl")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetWsdlUrl")
+	if err != nil {
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetWsdlUrl")
 	}
+	return reply.Body.GetWsdlUrlResponse, nil
 }

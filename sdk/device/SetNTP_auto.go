@@ -22,12 +22,17 @@ func Call_SetNTP(ctx context.Context, dev *onvif.Device, request device.SetNTP) 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetNTPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetNTP")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetNTPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetNTP")
 	}
+	return reply.Body.SetNTPResponse, nil
 }
 
 // CallWithLogging_SetNTP works like Call_SetNTP but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetNTP(ctx context.Context, logger *logx.Logger, dev *onvif
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetNTPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetNTP")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetNTP")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetNTP")
+	if err != nil {
 		return reply.Body.SetNTPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetNTP")
 	}
+	return reply.Body.SetNTPResponse, nil
 }

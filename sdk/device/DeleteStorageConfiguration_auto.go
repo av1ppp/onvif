@@ -22,12 +22,17 @@ func Call_DeleteStorageConfiguration(ctx context.Context, dev *onvif.Device, req
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.DeleteStorageConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteStorageConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.DeleteStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteStorageConfiguration")
 	}
+	return reply.Body.DeleteStorageConfigurationResponse, nil
 }
 
 // CallWithLogging_DeleteStorageConfiguration works like Call_DeleteStorageConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_DeleteStorageConfiguration(ctx context.Context, logger *log
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.DeleteStorageConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteStorageConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "DeleteStorageConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "DeleteStorageConfiguration")
+	if err != nil {
 		return reply.Body.DeleteStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteStorageConfiguration")
 	}
+	return reply.Body.DeleteStorageConfigurationResponse, nil
 }

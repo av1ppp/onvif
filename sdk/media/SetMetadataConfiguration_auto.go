@@ -22,12 +22,17 @@ func Call_SetMetadataConfiguration(ctx context.Context, dev *onvif.Device, reque
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetMetadataConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetMetadataConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetMetadataConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetMetadataConfiguration")
 	}
+	return reply.Body.SetMetadataConfigurationResponse, nil
 }
 
 // CallWithLogging_SetMetadataConfiguration works like Call_SetMetadataConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetMetadataConfiguration(ctx context.Context, logger *logx.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetMetadataConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetMetadataConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetMetadataConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetMetadataConfiguration")
+	if err != nil {
 		return reply.Body.SetMetadataConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetMetadataConfiguration")
 	}
+	return reply.Body.SetMetadataConfigurationResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_ScanAvailableDot11Networks(ctx context.Context, dev *onvif.Device, req
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
 	}
+	return reply.Body.ScanAvailableDot11NetworksResponse, nil
 }
 
 // CallWithLogging_ScanAvailableDot11Networks works like Call_ScanAvailableDot11Networks but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_ScanAvailableDot11Networks(ctx context.Context, logger *log
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "ScanAvailableDot11Networks")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "ScanAvailableDot11Networks")
+	if err != nil {
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
 	}
+	return reply.Body.ScanAvailableDot11NetworksResponse, nil
 }

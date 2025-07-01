@@ -22,12 +22,17 @@ func Call_SetCertificatesStatus(ctx context.Context, dev *onvif.Device, request 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetCertificatesStatus")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetCertificatesStatus")
 	}
+	return reply.Body.SetCertificatesStatusResponse, nil
 }
 
 // CallWithLogging_SetCertificatesStatus works like Call_SetCertificatesStatus but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetCertificatesStatus(ctx context.Context, logger *logx.Log
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetCertificatesStatus")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetCertificatesStatus")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetCertificatesStatus")
+	if err != nil {
 		return reply.Body.SetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetCertificatesStatus")
 	}
+	return reply.Body.SetCertificatesStatusResponse, nil
 }

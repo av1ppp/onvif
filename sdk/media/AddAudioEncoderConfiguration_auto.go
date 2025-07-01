@@ -22,12 +22,17 @@ func Call_AddAudioEncoderConfiguration(ctx context.Context, dev *onvif.Device, r
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AddAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddAudioEncoderConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.AddAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddAudioEncoderConfiguration")
 	}
+	return reply.Body.AddAudioEncoderConfigurationResponse, nil
 }
 
 // CallWithLogging_AddAudioEncoderConfiguration works like Call_AddAudioEncoderConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_AddAudioEncoderConfiguration(ctx context.Context, logger *l
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.AddAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddAudioEncoderConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AddAudioEncoderConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AddAudioEncoderConfiguration")
+	if err != nil {
 		return reply.Body.AddAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddAudioEncoderConfiguration")
 	}
+	return reply.Body.AddAudioEncoderConfigurationResponse, nil
 }

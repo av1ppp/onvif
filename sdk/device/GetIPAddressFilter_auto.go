@@ -22,12 +22,17 @@ func Call_GetIPAddressFilter(ctx context.Context, dev *onvif.Device, request dev
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetIPAddressFilter")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetIPAddressFilter")
 	}
+	return reply.Body.GetIPAddressFilterResponse, nil
 }
 
 // CallWithLogging_GetIPAddressFilter works like Call_GetIPAddressFilter but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetIPAddressFilter(ctx context.Context, logger *logx.Logger
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetIPAddressFilter")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetIPAddressFilter")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetIPAddressFilter")
+	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetIPAddressFilter")
 	}
+	return reply.Body.GetIPAddressFilterResponse, nil
 }

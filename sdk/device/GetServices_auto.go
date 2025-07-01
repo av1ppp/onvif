@@ -22,12 +22,17 @@ func Call_GetServices(ctx context.Context, dev *onvif.Device, request device.Get
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetServicesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetServices")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetServicesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetServices")
 	}
+	return reply.Body.GetServicesResponse, nil
 }
 
 // CallWithLogging_GetServices works like Call_GetServices but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetServices(ctx context.Context, logger *logx.Logger, dev *
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetServicesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetServices")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetServices")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetServices")
+	if err != nil {
 		return reply.Body.GetServicesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetServices")
 	}
+	return reply.Body.GetServicesResponse, nil
 }

@@ -22,12 +22,17 @@ func Call_SetScopes(ctx context.Context, dev *onvif.Device, request device.SetSc
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetScopes")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.SetScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetScopes")
 	}
+	return reply.Body.SetScopesResponse, nil
 }
 
 // CallWithLogging_SetScopes works like Call_SetScopes but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_SetScopes(ctx context.Context, logger *logx.Logger, dev *on
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.SetScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetScopes")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetScopes")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetScopes")
+	if err != nil {
 		return reply.Body.SetScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetScopes")
 	}
+	return reply.Body.SetScopesResponse, nil
 }

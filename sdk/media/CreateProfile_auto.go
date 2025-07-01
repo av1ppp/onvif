@@ -22,12 +22,17 @@ func Call_CreateProfile(ctx context.Context, dev *onvif.Device, request media.Cr
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
 	}
+	return reply.Body.CreateProfileResponse, nil
 }
 
 // CallWithLogging_CreateProfile works like Call_CreateProfile but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_CreateProfile(ctx context.Context, logger *logx.Logger, dev
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateProfile")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateProfile")
+	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
 	}
+	return reply.Body.CreateProfileResponse, nil
 }

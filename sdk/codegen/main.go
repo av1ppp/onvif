@@ -34,12 +34,17 @@ func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.St
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	}
+	return reply.Body.{{.TypeReply}}, nil
 }
 
 // CallWithLogging_{{.TypeRequest}} works like Call_{{.TypeRequest}} but also logs the response body.
@@ -51,12 +56,17 @@ func CallWithLogging_{{.TypeRequest}}(ctx context.Context, logger *logx.Logger, 
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "{{.TypeRequest}}")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "{{.TypeRequest}}")
+	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	}
+	return reply.Body.{{.TypeReply}}, nil
 }
 `
 

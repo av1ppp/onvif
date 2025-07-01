@@ -22,12 +22,17 @@ func Call_CreateStorageConfiguration(ctx context.Context, dev *onvif.Device, req
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
 	}
+	return reply.Body.CreateStorageConfigurationResponse, nil
 }
 
 // CallWithLogging_CreateStorageConfiguration works like Call_CreateStorageConfiguration but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_CreateStorageConfiguration(ctx context.Context, logger *log
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateStorageConfiguration")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateStorageConfiguration")
+	if err != nil {
 		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
 	}
+	return reply.Body.CreateStorageConfigurationResponse, nil
 }

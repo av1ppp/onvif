@@ -22,12 +22,17 @@ func Call_Stop(ctx context.Context, dev *onvif.Device, request ptz.Stop) (ptz.St
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.StopResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "Stop")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.StopResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Stop")
 	}
+	return reply.Body.StopResponse, nil
 }
 
 // CallWithLogging_Stop works like Call_Stop but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_Stop(ctx context.Context, logger *logx.Logger, dev *onvif.D
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.StopResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "Stop")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "Stop")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "Stop")
+	if err != nil {
 		return reply.Body.StopResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Stop")
 	}
+	return reply.Body.StopResponse, nil
 }

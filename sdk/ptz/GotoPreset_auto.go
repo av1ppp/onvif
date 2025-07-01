@@ -22,12 +22,17 @@ func Call_GotoPreset(ctx context.Context, dev *onvif.Device, request ptz.GotoPre
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GotoPresetResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GotoPreset")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GotoPresetResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GotoPreset")
 	}
+	return reply.Body.GotoPresetResponse, nil
 }
 
 // CallWithLogging_GotoPreset works like Call_GotoPreset but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GotoPreset(ctx context.Context, logger *logx.Logger, dev *o
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GotoPresetResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GotoPreset")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GotoPreset")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GotoPreset")
+	if err != nil {
 		return reply.Body.GotoPresetResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GotoPreset")
 	}
+	return reply.Body.GotoPresetResponse, nil
 }

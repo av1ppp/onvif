@@ -22,12 +22,17 @@ func Call_GetDPAddresses(ctx context.Context, dev *onvif.Device, request device.
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetDPAddressesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDPAddresses")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.GetDPAddressesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDPAddresses")
 	}
+	return reply.Body.GetDPAddressesResponse, nil
 }
 
 // CallWithLogging_GetDPAddresses works like Call_GetDPAddresses but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_GetDPAddresses(ctx context.Context, logger *logx.Logger, de
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.GetDPAddressesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDPAddresses")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetDPAddresses")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetDPAddresses")
+	if err != nil {
 		return reply.Body.GetDPAddressesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDPAddresses")
 	}
+	return reply.Body.GetDPAddressesResponse, nil
 }

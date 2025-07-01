@@ -22,12 +22,17 @@ func Call_CreateCertificate(ctx context.Context, dev *onvif.Device, request devi
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateCertificateResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateCertificate")
-	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	} 
+
+	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	if err != nil {
 		return reply.Body.CreateCertificateResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateCertificate")
 	}
+	return reply.Body.CreateCertificateResponse, nil
 }
 
 // CallWithLogging_CreateCertificate works like Call_CreateCertificate but also logs the response body.
@@ -39,10 +44,15 @@ func CallWithLogging_CreateCertificate(ctx context.Context, logger *logx.Logger,
 		}
 	}
 	var reply Envelope
-	if httpReply, err := dev.CallMethod(request); err != nil {
+
+	httpReply, err := dev.CallMethod(request)
+	if err != nil {
 		return reply.Body.CreateCertificateResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateCertificate")
-	} else {
-		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateCertificate")
+	} 
+
+	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateCertificate")
+	if err != nil {
 		return reply.Body.CreateCertificateResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateCertificate")
 	}
+	return reply.Body.CreateCertificateResponse, nil
 }
