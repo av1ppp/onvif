@@ -32,8 +32,5 @@ func PullMessages(ctx context.Context, dev *onvif.Device, request *onvif.Req[eve
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.PullMessagesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "PullMessages")
-	}
-	return reply.Body.PullMessagesResponse, nil
+	return reply.Body.PullMessagesResponse, err
 }

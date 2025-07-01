@@ -32,8 +32,5 @@ func RemoveAudioSourceConfiguration(ctx context.Context, dev *onvif.Device, requ
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.RemoveAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveAudioSourceConfiguration")
-	}
-	return reply.Body.RemoveAudioSourceConfigurationResponse, nil
+	return reply.Body.RemoveAudioSourceConfigurationResponse, err
 }

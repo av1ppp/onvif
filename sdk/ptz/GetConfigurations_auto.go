@@ -32,8 +32,5 @@ func GetConfigurations(ctx context.Context, dev *onvif.Device, request *onvif.Re
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetConfigurations")
-	}
-	return reply.Body.GetConfigurationsResponse, nil
+	return reply.Body.GetConfigurationsResponse, err
 }

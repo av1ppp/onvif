@@ -32,8 +32,5 @@ func GetEndpointReference(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetEndpointReferenceResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetEndpointReference")
-	}
-	return reply.Body.GetEndpointReferenceResponse, nil
+	return reply.Body.GetEndpointReferenceResponse, err
 }

@@ -32,8 +32,5 @@ func StartSystemRestore(ctx context.Context, dev *onvif.Device, request *onvif.R
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.StartSystemRestoreResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StartSystemRestore")
-	}
-	return reply.Body.StartSystemRestoreResponse, nil
+	return reply.Body.StartSystemRestoreResponse, err
 }

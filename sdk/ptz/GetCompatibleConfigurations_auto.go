@@ -32,8 +32,5 @@ func GetCompatibleConfigurations(ctx context.Context, dev *onvif.Device, request
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
-	}
-	return reply.Body.GetCompatibleConfigurationsResponse, nil
+	return reply.Body.GetCompatibleConfigurationsResponse, err
 }

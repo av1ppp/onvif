@@ -32,8 +32,5 @@ func RemovePreset(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.RemovePresetResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemovePreset")
-	}
-	return reply.Body.RemovePresetResponse, nil
+	return reply.Body.RemovePresetResponse, err
 }

@@ -32,8 +32,5 @@ func GeoMove(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz.GeoM
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GeoMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GeoMove")
-	}
-	return reply.Body.GeoMoveResponse, nil
+	return reply.Body.GeoMoveResponse, err
 }

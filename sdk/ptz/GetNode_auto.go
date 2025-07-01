@@ -32,8 +32,5 @@ func GetNode(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz.GetN
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetNodeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNode")
-	}
-	return reply.Body.GetNodeResponse, nil
+	return reply.Body.GetNodeResponse, err
 }

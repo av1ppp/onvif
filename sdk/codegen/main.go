@@ -44,10 +44,7 @@ func {{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request *onvif.Req
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
-	}
-	return reply.Body.{{.TypeReply}}, nil
+	return reply.Body.{{.TypeReply}}, err
 }
 `
 

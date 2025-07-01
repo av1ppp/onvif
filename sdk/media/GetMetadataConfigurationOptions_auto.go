@@ -32,8 +32,5 @@ func GetMetadataConfigurationOptions(ctx context.Context, dev *onvif.Device, req
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetMetadataConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetMetadataConfigurationOptions")
-	}
-	return reply.Body.GetMetadataConfigurationOptionsResponse, nil
+	return reply.Body.GetMetadataConfigurationOptionsResponse, err
 }

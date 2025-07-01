@@ -32,8 +32,5 @@ func SetDot1XConfiguration(ctx context.Context, dev *onvif.Device, request *onvi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDot1XConfiguration")
-	}
-	return reply.Body.SetDot1XConfigurationResponse, nil
+	return reply.Body.SetDot1XConfigurationResponse, err
 }

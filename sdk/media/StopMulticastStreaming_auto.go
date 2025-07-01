@@ -32,8 +32,5 @@ func StopMulticastStreaming(ctx context.Context, dev *onvif.Device, request *onv
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.StopMulticastStreamingResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StopMulticastStreaming")
-	}
-	return reply.Body.StopMulticastStreamingResponse, nil
+	return reply.Body.StopMulticastStreamingResponse, err
 }

@@ -7,5 +7,14 @@ var (
 
 	Common = Root.NewType("common")
 
-	PropMethod = errorx.RegisterProperty("method")
+	traitSoap = errorx.RegisterTrait("soap")
+	Soap      = Root.NewType("soap", traitSoap)
+
+	PropMethod     = errorx.RegisterProperty("method")
+	PropStatusCode = errorx.RegisterProperty("status_code")
+	PropSoapCode   = errorx.RegisterProperty("soap_code")
 )
+
+func IsSoapError(err error) bool {
+	return errorx.HasTrait(err, traitSoap)
+}

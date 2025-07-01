@@ -32,8 +32,5 @@ func SetHostnameFromDHCP(ctx context.Context, dev *onvif.Device, request *onvif.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetHostnameFromDHCPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHostnameFromDHCP")
-	}
-	return reply.Body.SetHostnameFromDHCPResponse, nil
+	return reply.Body.SetHostnameFromDHCPResponse, err
 }

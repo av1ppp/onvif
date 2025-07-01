@@ -32,8 +32,5 @@ func GetCACertificates(ctx context.Context, dev *onvif.Device, request *onvif.Re
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetCACertificatesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCACertificates")
-	}
-	return reply.Body.GetCACertificatesResponse, nil
+	return reply.Body.GetCACertificatesResponse, err
 }

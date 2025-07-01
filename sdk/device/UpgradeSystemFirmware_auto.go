@@ -32,8 +32,5 @@ func UpgradeSystemFirmware(ctx context.Context, dev *onvif.Device, request *onvi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.UpgradeSystemFirmwareResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "UpgradeSystemFirmware")
-	}
-	return reply.Body.UpgradeSystemFirmwareResponse, nil
+	return reply.Body.UpgradeSystemFirmwareResponse, err
 }

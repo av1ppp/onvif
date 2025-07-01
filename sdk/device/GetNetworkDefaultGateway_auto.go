@@ -32,8 +32,5 @@ func GetNetworkDefaultGateway(ctx context.Context, dev *onvif.Device, request *o
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
-	}
-	return reply.Body.GetNetworkDefaultGatewayResponse, nil
+	return reply.Body.GetNetworkDefaultGatewayResponse, err
 }

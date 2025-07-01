@@ -32,8 +32,5 @@ func DeleteGeoLocation(ctx context.Context, dev *onvif.Device, request *onvif.Re
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.DeleteGeoLocationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteGeoLocation")
-	}
-	return reply.Body.DeleteGeoLocationResponse, nil
+	return reply.Body.DeleteGeoLocationResponse, err
 }

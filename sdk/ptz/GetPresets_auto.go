@@ -32,8 +32,5 @@ func GetPresets(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz.G
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetPresetsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPresets")
-	}
-	return reply.Body.GetPresetsResponse, nil
+	return reply.Body.GetPresetsResponse, err
 }

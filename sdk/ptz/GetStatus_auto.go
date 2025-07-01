@@ -32,8 +32,5 @@ func GetStatus(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz.Ge
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetStatus")
-	}
-	return reply.Body.GetStatusResponse, nil
+	return reply.Body.GetStatusResponse, err
 }

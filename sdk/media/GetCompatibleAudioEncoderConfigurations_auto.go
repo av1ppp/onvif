@@ -32,8 +32,5 @@ func GetCompatibleAudioEncoderConfigurations(ctx context.Context, dev *onvif.Dev
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleAudioEncoderConfigurations")
-	}
-	return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, nil
+	return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, err
 }

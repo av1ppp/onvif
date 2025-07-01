@@ -32,8 +32,5 @@ func AddVideoEncoderConfiguration(ctx context.Context, dev *onvif.Device, reques
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.AddVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddVideoEncoderConfiguration")
-	}
-	return reply.Body.AddVideoEncoderConfigurationResponse, nil
+	return reply.Body.AddVideoEncoderConfigurationResponse, err
 }

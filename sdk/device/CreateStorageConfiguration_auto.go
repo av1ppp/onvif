@@ -32,8 +32,5 @@ func CreateStorageConfiguration(ctx context.Context, dev *onvif.Device, request 
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.CreateStorageConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateStorageConfiguration")
-	}
-	return reply.Body.CreateStorageConfigurationResponse, nil
+	return reply.Body.CreateStorageConfigurationResponse, err
 }

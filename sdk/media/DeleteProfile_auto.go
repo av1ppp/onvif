@@ -32,8 +32,5 @@ func DeleteProfile(ctx context.Context, dev *onvif.Device, request *onvif.Req[me
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.DeleteProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteProfile")
-	}
-	return reply.Body.DeleteProfileResponse, nil
+	return reply.Body.DeleteProfileResponse, err
 }

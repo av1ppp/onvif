@@ -32,8 +32,5 @@ func LoadCertificateWithPrivateKey(ctx context.Context, dev *onvif.Device, reque
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.LoadCertificateWithPrivateKeyResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "LoadCertificateWithPrivateKey")
-	}
-	return reply.Body.LoadCertificateWithPrivateKeyResponse, nil
+	return reply.Body.LoadCertificateWithPrivateKeyResponse, err
 }

@@ -32,8 +32,5 @@ func DeleteDot1XConfiguration(ctx context.Context, dev *onvif.Device, request *o
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.DeleteDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteDot1XConfiguration")
-	}
-	return reply.Body.DeleteDot1XConfigurationResponse, nil
+	return reply.Body.DeleteDot1XConfigurationResponse, err
 }

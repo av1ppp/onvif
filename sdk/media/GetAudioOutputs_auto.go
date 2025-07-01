@@ -32,8 +32,5 @@ func GetAudioOutputs(ctx context.Context, dev *onvif.Device, request *onvif.Req[
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetAudioOutputsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputs")
-	}
-	return reply.Body.GetAudioOutputsResponse, nil
+	return reply.Body.GetAudioOutputsResponse, err
 }

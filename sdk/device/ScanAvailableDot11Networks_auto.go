@@ -32,8 +32,5 @@ func ScanAvailableDot11Networks(ctx context.Context, dev *onvif.Device, request 
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
-	}
-	return reply.Body.ScanAvailableDot11NetworksResponse, nil
+	return reply.Body.ScanAvailableDot11NetworksResponse, err
 }

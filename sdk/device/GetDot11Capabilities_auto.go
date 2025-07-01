@@ -32,8 +32,5 @@ func GetDot11Capabilities(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetDot11CapabilitiesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot11Capabilities")
-	}
-	return reply.Body.GetDot11CapabilitiesResponse, nil
+	return reply.Body.GetDot11CapabilitiesResponse, err
 }

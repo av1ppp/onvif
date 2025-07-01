@@ -32,8 +32,5 @@ func DeleteOSD(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.DeleteOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteOSD")
-	}
-	return reply.Body.DeleteOSDResponse, nil
+	return reply.Body.DeleteOSDResponse, err
 }

@@ -32,8 +32,5 @@ func GetEventProperties(ctx context.Context, dev *onvif.Device, request *onvif.R
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetEventPropertiesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetEventProperties")
-	}
-	return reply.Body.GetEventPropertiesResponse, nil
+	return reply.Body.GetEventPropertiesResponse, err
 }

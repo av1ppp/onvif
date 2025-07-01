@@ -32,8 +32,5 @@ func GetNTP(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.Ge
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetNTPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNTP")
-	}
-	return reply.Body.GetNTPResponse, nil
+	return reply.Body.GetNTPResponse, err
 }

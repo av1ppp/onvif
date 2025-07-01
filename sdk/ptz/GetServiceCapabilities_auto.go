@@ -32,8 +32,5 @@ func GetServiceCapabilities(ctx context.Context, dev *onvif.Device, request *onv
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetServiceCapabilitiesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetServiceCapabilities")
-	}
-	return reply.Body.GetServiceCapabilitiesResponse, nil
+	return reply.Body.GetServiceCapabilitiesResponse, err
 }

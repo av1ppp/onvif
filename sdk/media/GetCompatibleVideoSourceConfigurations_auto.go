@@ -32,8 +32,5 @@ func GetCompatibleVideoSourceConfigurations(ctx context.Context, dev *onvif.Devi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleVideoSourceConfigurations")
-	}
-	return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, nil
+	return reply.Body.GetCompatibleVideoSourceConfigurationsResponse, err
 }

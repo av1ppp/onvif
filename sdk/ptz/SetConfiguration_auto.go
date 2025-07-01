@@ -32,8 +32,5 @@ func SetConfiguration(ctx context.Context, dev *onvif.Device, request *onvif.Req
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetConfiguration")
-	}
-	return reply.Body.SetConfigurationResponse, nil
+	return reply.Body.SetConfigurationResponse, err
 }

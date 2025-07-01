@@ -32,8 +32,5 @@ func SetDiscoveryMode(ctx context.Context, dev *onvif.Device, request *onvif.Req
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetDiscoveryModeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDiscoveryMode")
-	}
-	return reply.Body.SetDiscoveryModeResponse, nil
+	return reply.Body.SetDiscoveryModeResponse, err
 }

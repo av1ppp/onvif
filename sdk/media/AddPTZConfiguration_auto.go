@@ -32,8 +32,5 @@ func AddPTZConfiguration(ctx context.Context, dev *onvif.Device, request *onvif.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.AddPTZConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddPTZConfiguration")
-	}
-	return reply.Body.AddPTZConfigurationResponse, nil
+	return reply.Body.AddPTZConfigurationResponse, err
 }

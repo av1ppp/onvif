@@ -32,8 +32,5 @@ func SetCertificatesStatus(ctx context.Context, dev *onvif.Device, request *onvi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetCertificatesStatus")
-	}
-	return reply.Body.SetCertificatesStatusResponse, nil
+	return reply.Body.SetCertificatesStatusResponse, err
 }

@@ -32,8 +32,5 @@ func CreateUsers(ctx context.Context, dev *onvif.Device, request *onvif.Req[devi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.CreateUsersResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateUsers")
-	}
-	return reply.Body.CreateUsersResponse, nil
+	return reply.Body.CreateUsersResponse, err
 }

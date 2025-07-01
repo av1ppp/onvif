@@ -32,8 +32,5 @@ func GetSystemDateAndTime(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetSystemDateAndTimeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemDateAndTime")
-	}
-	return reply.Body.GetSystemDateAndTimeResponse, nil
+	return reply.Body.GetSystemDateAndTimeResponse, err
 }

@@ -32,8 +32,5 @@ func GetSystemSupportInformation(ctx context.Context, dev *onvif.Device, request
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetSystemSupportInformationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemSupportInformation")
-	}
-	return reply.Body.GetSystemSupportInformationResponse, nil
+	return reply.Body.GetSystemSupportInformationResponse, err
 }

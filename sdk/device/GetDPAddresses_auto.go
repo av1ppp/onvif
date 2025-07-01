@@ -32,8 +32,5 @@ func GetDPAddresses(ctx context.Context, dev *onvif.Device, request *onvif.Req[d
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetDPAddressesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDPAddresses")
-	}
-	return reply.Body.GetDPAddressesResponse, nil
+	return reply.Body.GetDPAddressesResponse, err
 }

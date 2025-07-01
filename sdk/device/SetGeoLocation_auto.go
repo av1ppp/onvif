@@ -32,8 +32,5 @@ func SetGeoLocation(ctx context.Context, dev *onvif.Device, request *onvif.Req[d
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetGeoLocationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetGeoLocation")
-	}
-	return reply.Body.SetGeoLocationResponse, nil
+	return reply.Body.SetGeoLocationResponse, err
 }

@@ -32,8 +32,5 @@ func GetPresetTour(ctx context.Context, dev *onvif.Device, request *onvif.Req[pt
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetPresetTourResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPresetTour")
-	}
-	return reply.Body.GetPresetTourResponse, nil
+	return reply.Body.GetPresetTourResponse, err
 }

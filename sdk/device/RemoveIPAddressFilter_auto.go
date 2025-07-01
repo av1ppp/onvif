@@ -32,8 +32,5 @@ func RemoveIPAddressFilter(ctx context.Context, dev *onvif.Device, request *onvi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.RemoveIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveIPAddressFilter")
-	}
-	return reply.Body.RemoveIPAddressFilterResponse, nil
+	return reply.Body.RemoveIPAddressFilterResponse, err
 }

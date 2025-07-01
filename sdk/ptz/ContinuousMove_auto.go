@@ -32,8 +32,5 @@ func ContinuousMove(ctx context.Context, dev *onvif.Device, request *onvif.Req[p
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.ContinuousMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ContinuousMove")
-	}
-	return reply.Body.ContinuousMoveResponse, nil
+	return reply.Body.ContinuousMoveResponse, err
 }

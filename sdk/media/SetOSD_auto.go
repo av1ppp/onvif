@@ -32,8 +32,5 @@ func SetOSD(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.Set
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetOSD")
-	}
-	return reply.Body.SetOSDResponse, nil
+	return reply.Body.SetOSDResponse, err
 }

@@ -32,8 +32,5 @@ func SendAuxiliaryCommand(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
-	}
-	return reply.Body.SendAuxiliaryCommandResponse, nil
+	return reply.Body.SendAuxiliaryCommandResponse, err
 }

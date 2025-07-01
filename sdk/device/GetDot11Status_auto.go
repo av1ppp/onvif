@@ -32,8 +32,5 @@ func GetDot11Status(ctx context.Context, dev *onvif.Device, request *onvif.Req[d
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetDot11StatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot11Status")
-	}
-	return reply.Body.GetDot11StatusResponse, nil
+	return reply.Body.GetDot11StatusResponse, err
 }

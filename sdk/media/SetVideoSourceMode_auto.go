@@ -32,8 +32,5 @@ func SetVideoSourceMode(ctx context.Context, dev *onvif.Device, request *onvif.R
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetVideoSourceModeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoSourceMode")
-	}
-	return reply.Body.SetVideoSourceModeResponse, nil
+	return reply.Body.SetVideoSourceModeResponse, err
 }

@@ -32,8 +32,5 @@ func SetZeroConfiguration(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetZeroConfiguration")
-	}
-	return reply.Body.SetZeroConfigurationResponse, nil
+	return reply.Body.SetZeroConfigurationResponse, err
 }

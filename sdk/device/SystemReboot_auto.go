@@ -32,8 +32,5 @@ func SystemReboot(ctx context.Context, dev *onvif.Device, request *onvif.Req[dev
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SystemRebootResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SystemReboot")
-	}
-	return reply.Body.SystemRebootResponse, nil
+	return reply.Body.SystemRebootResponse, err
 }

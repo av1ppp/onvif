@@ -32,8 +32,5 @@ func Unsubscribe(ctx context.Context, dev *onvif.Device, request *onvif.Req[even
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.UnsubscribeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Unsubscribe")
-	}
-	return reply.Body.UnsubscribeResponse, nil
+	return reply.Body.UnsubscribeResponse, err
 }

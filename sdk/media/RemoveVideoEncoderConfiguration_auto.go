@@ -32,8 +32,5 @@ func RemoveVideoEncoderConfiguration(ctx context.Context, dev *onvif.Device, req
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.RemoveVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveVideoEncoderConfiguration")
-	}
-	return reply.Body.RemoveVideoEncoderConfigurationResponse, nil
+	return reply.Body.RemoveVideoEncoderConfigurationResponse, err
 }

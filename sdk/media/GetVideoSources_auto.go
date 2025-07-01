@@ -32,8 +32,5 @@ func GetVideoSources(ctx context.Context, dev *onvif.Device, request *onvif.Req[
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetVideoSourcesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetVideoSources")
-	}
-	return reply.Body.GetVideoSourcesResponse, nil
+	return reply.Body.GetVideoSourcesResponse, err
 }

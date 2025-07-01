@@ -32,8 +32,5 @@ func Subscribe(ctx context.Context, dev *onvif.Device, request *onvif.Req[event.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SubscribeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Subscribe")
-	}
-	return reply.Body.SubscribeResponse, nil
+	return reply.Body.SubscribeResponse, err
 }

@@ -32,8 +32,5 @@ func GetGuaranteedNumberOfVideoEncoderInstances(ctx context.Context, dev *onvif.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetGuaranteedNumberOfVideoEncoderInstances")
-	}
-	return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, nil
+	return reply.Body.GetGuaranteedNumberOfVideoEncoderInstancesResponse, err
 }

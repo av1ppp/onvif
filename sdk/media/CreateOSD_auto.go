@@ -32,8 +32,5 @@ func CreateOSD(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.CreateOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateOSD")
-	}
-	return reply.Body.CreateOSDResponse, nil
+	return reply.Body.CreateOSDResponse, err
 }

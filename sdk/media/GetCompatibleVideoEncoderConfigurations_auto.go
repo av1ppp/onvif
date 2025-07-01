@@ -32,8 +32,5 @@ func GetCompatibleVideoEncoderConfigurations(ctx context.Context, dev *onvif.Dev
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetCompatibleVideoEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleVideoEncoderConfigurations")
-	}
-	return reply.Body.GetCompatibleVideoEncoderConfigurationsResponse, nil
+	return reply.Body.GetCompatibleVideoEncoderConfigurationsResponse, err
 }

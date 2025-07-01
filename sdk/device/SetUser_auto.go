@@ -32,8 +32,5 @@ func SetUser(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.S
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetUserResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetUser")
-	}
-	return reply.Body.SetUserResponse, nil
+	return reply.Body.SetUserResponse, err
 }

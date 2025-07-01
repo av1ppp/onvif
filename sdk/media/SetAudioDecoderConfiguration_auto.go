@@ -32,8 +32,5 @@ func SetAudioDecoderConfiguration(ctx context.Context, dev *onvif.Device, reques
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetAudioDecoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetAudioDecoderConfiguration")
-	}
-	return reply.Body.SetAudioDecoderConfigurationResponse, nil
+	return reply.Body.SetAudioDecoderConfigurationResponse, err
 }

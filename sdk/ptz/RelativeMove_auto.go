@@ -32,8 +32,5 @@ func RelativeMove(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.RelativeMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RelativeMove")
-	}
-	return reply.Body.RelativeMoveResponse, nil
+	return reply.Body.RelativeMoveResponse, err
 }

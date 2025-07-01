@@ -32,8 +32,5 @@ func AbsoluteMove(ctx context.Context, dev *onvif.Device, request *onvif.Req[ptz
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.AbsoluteMoveResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AbsoluteMove")
-	}
-	return reply.Body.AbsoluteMoveResponse, nil
+	return reply.Body.AbsoluteMoveResponse, err
 }

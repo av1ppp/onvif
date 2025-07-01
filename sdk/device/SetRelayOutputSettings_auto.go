@@ -32,8 +32,5 @@ func SetRelayOutputSettings(ctx context.Context, dev *onvif.Device, request *onv
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
-	}
-	return reply.Body.SetRelayOutputSettingsResponse, nil
+	return reply.Body.SetRelayOutputSettingsResponse, err
 }

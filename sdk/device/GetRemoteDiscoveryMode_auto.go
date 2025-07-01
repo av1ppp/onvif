@@ -32,8 +32,5 @@ func GetRemoteDiscoveryMode(ctx context.Context, dev *onvif.Device, request *onv
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetRemoteDiscoveryModeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetRemoteDiscoveryMode")
-	}
-	return reply.Body.GetRemoteDiscoveryModeResponse, nil
+	return reply.Body.GetRemoteDiscoveryModeResponse, err
 }

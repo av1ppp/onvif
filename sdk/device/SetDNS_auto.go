@@ -32,8 +32,5 @@ func SetDNS(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.Se
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDNS")
-	}
-	return reply.Body.SetDNSResponse, nil
+	return reply.Body.SetDNSResponse, err
 }

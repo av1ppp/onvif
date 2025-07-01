@@ -32,8 +32,5 @@ func GetSystemUris(ctx context.Context, dev *onvif.Device, request *onvif.Req[de
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetSystemUrisResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemUris")
-	}
-	return reply.Body.GetSystemUrisResponse, nil
+	return reply.Body.GetSystemUrisResponse, err
 }

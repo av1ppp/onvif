@@ -32,8 +32,5 @@ func AddVideoAnalyticsConfiguration(ctx context.Context, dev *onvif.Device, requ
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.AddVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddVideoAnalyticsConfiguration")
-	}
-	return reply.Body.AddVideoAnalyticsConfigurationResponse, nil
+	return reply.Body.AddVideoAnalyticsConfigurationResponse, err
 }

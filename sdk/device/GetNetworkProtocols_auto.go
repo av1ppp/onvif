@@ -32,8 +32,5 @@ func GetNetworkProtocols(ctx context.Context, dev *onvif.Device, request *onvif.
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetNetworkProtocolsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkProtocols")
-	}
-	return reply.Body.GetNetworkProtocolsResponse, nil
+	return reply.Body.GetNetworkProtocolsResponse, err
 }

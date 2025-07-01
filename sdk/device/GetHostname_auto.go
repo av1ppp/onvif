@@ -32,8 +32,5 @@ func GetHostname(ctx context.Context, dev *onvif.Device, request *onvif.Req[devi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetHostnameResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetHostname")
-	}
-	return reply.Body.GetHostnameResponse, nil
+	return reply.Body.GetHostnameResponse, err
 }

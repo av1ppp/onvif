@@ -32,8 +32,5 @@ func SetDynamicDNS(ctx context.Context, dev *onvif.Device, request *onvif.Req[de
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDynamicDNS")
-	}
-	return reply.Body.SetDynamicDNSResponse, nil
+	return reply.Body.SetDynamicDNSResponse, err
 }

@@ -32,8 +32,5 @@ func SetNetworkInterfaces(ctx context.Context, dev *onvif.Device, request *onvif
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.SetNetworkInterfacesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetNetworkInterfaces")
-	}
-	return reply.Body.SetNetworkInterfacesResponse, nil
+	return reply.Body.SetNetworkInterfacesResponse, err
 }

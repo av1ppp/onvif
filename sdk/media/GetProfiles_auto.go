@@ -32,8 +32,5 @@ func GetProfiles(ctx context.Context, dev *onvif.Device, request *onvif.Req[medi
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetProfilesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetProfiles")
-	}
-	return reply.Body.GetProfilesResponse, nil
+	return reply.Body.GetProfilesResponse, err
 }

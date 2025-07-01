@@ -32,8 +32,5 @@ func GetScopes(ctx context.Context, dev *onvif.Device, request *onvif.Req[device
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetScopes")
-	}
-	return reply.Body.GetScopesResponse, nil
+	return reply.Body.GetScopesResponse, err
 }

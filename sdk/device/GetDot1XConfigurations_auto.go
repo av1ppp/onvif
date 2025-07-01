@@ -32,8 +32,5 @@ func GetDot1XConfigurations(ctx context.Context, dev *onvif.Device, request *onv
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetDot1XConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetDot1XConfigurations")
-	}
-	return reply.Body.GetDot1XConfigurationsResponse, nil
+	return reply.Body.GetDot1XConfigurationsResponse, err
 }

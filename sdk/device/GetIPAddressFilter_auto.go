@@ -32,8 +32,5 @@ func GetIPAddressFilter(ctx context.Context, dev *onvif.Device, request *onvif.R
 	} else {
 		err = sdk.ReadAndParse(ctx, httpReply, &reply)
 	}
-	if err != nil {
-		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetIPAddressFilter")
-	}
-	return reply.Body.GetIPAddressFilterResponse, nil
+	return reply.Body.GetIPAddressFilterResponse, err
 }
