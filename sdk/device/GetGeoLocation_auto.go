@@ -45,7 +45,7 @@ func CallWithLogging_GetGeoLocation(ctx context.Context, logger *logx.Logger, de
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetGeoLocationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetGeoLocation")
 	} 

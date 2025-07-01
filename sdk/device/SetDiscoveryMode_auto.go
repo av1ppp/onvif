@@ -45,7 +45,7 @@ func CallWithLogging_SetDiscoveryMode(ctx context.Context, logger *logx.Logger, 
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.SetDiscoveryModeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetDiscoveryMode")
 	} 

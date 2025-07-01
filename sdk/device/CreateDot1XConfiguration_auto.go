@@ -45,7 +45,7 @@ func CallWithLogging_CreateDot1XConfiguration(ctx context.Context, logger *logx.
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
 	} 

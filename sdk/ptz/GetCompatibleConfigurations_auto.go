@@ -45,7 +45,7 @@ func CallWithLogging_GetCompatibleConfigurations(ctx context.Context, logger *lo
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
 	} 

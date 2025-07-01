@@ -13,6 +13,5 @@ func SendSoap(httpClient *http.Client, endpoint, message string) (*http.Response
 	if err != nil {
 		return resp, errors.Common.Wrap(err, "failed to send POST request")
 	}
-
 	return resp, nil
 }

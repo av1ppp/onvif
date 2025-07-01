@@ -45,7 +45,7 @@ func CallWithLogging_RemoveVideoAnalyticsConfiguration(ctx context.Context, logg
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.RemoveVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveVideoAnalyticsConfiguration")
 	} 

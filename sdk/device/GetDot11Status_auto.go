@@ -45,7 +45,7 @@ func CallWithLogging_GetDot11Status(ctx context.Context, logger *logx.Logger, de
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetDot11StatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDot11Status")
 	} 

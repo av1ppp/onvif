@@ -45,7 +45,7 @@ func CallWithLogging_GetHostname(ctx context.Context, logger *logx.Logger, dev *
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetHostnameResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetHostname")
 	} 

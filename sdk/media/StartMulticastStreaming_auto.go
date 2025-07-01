@@ -45,7 +45,7 @@ func CallWithLogging_StartMulticastStreaming(ctx context.Context, logger *logx.L
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.StartMulticastStreamingResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "StartMulticastStreaming")
 	} 

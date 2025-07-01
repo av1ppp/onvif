@@ -45,7 +45,7 @@ func CallWithLogging_SetNTP(ctx context.Context, logger *logx.Logger, dev *onvif
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.SetNTPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetNTP")
 	} 

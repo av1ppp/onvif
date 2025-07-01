@@ -45,7 +45,7 @@ func CallWithLogging_RemoveVideoSourceConfiguration(ctx context.Context, logger 
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.RemoveVideoSourceConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveVideoSourceConfiguration")
 	} 

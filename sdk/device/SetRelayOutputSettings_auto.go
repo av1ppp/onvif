@@ -45,7 +45,7 @@ func CallWithLogging_SetRelayOutputSettings(ctx context.Context, logger *logx.Lo
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
 	} 

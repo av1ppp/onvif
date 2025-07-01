@@ -45,7 +45,7 @@ func CallWithLogging_SetMetadataConfiguration(ctx context.Context, logger *logx.
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.SetMetadataConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetMetadataConfiguration")
 	} 

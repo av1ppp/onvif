@@ -45,7 +45,7 @@ func CallWithLogging_GetAudioEncoderConfigurationOptions(ctx context.Context, lo
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetAudioEncoderConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioEncoderConfigurationOptions")
 	} 

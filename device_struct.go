@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/av1ppp/logx"
 	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/gosoap"
 	"github.com/av1ppp/onvif/networking"
@@ -255,29 +256,51 @@ func (dev Device) getEndpoint(endpoint string) (string, error) {
 	return endpointURL, errors.New("target endpoint service not found")
 }
 
-// CallMethod functions call an method, defined <method> struct.
+// CallMethod function call an method, defined <method> struct.
 // You should use Authenticate method to call authorized requests.
-func (dev Device) CallMethod(method interface{}) (*http.Response, error) {
-	pkgPath := strings.Split(reflect.TypeOf(method).PkgPath(), "/")
-	pkg := strings.ToLower(pkgPath[len(pkgPath)-1])
-
-	endpoint, err := dev.getEndpoint(pkg)
+func (dev Device) CallMethod(method any) (*http.Response, error) {
+	endpoint, err := dev.parseAndGetEndpoint(method)
 	if err != nil {
 		return nil, err
 	}
-	return dev.callMethodDo(endpoint, method)
-}
 
-// CallMethod functions call an method, defined <method> struct with authentication data
-func (dev Device) callMethodDo(endpoint string, method interface{}) (*http.Response, error) {
-	output, err := xml.MarshalIndent(method, "  ", "    ")
+	soap, err := dev.prepareSoap(method)
 	if err != nil {
 		return nil, err
+	}
+
+	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
+}
+
+// CallMethod function call an method, defined <method> struct.
+// You should use Authenticate method to call authorized requests.
+func (dev Device) CallMethodWithLogging(logger *logx.Logger, method any) (*http.Response, error) {
+	endpoint, err := dev.parseAndGetEndpoint(method)
+	if err != nil {
+		return nil, err
+	}
+
+	soap, err := dev.prepareSoap(method)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.Debug("sending soap message",
+		logx.String("endpoint", endpoint),
+		logx.String("message", soap.String()))
+
+	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
+}
+
+func (dev Device) prepareSoap(method any) (gosoap.SoapMessage, error) {
+	output, err := xml.MarshalIndent(method, "  ", "    ")
+	if err != nil {
+		return "", err
 	}
 
 	soap, err := dev.buildMethodSOAP(string(output))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	soap.AddRootNamespaces(Xlmns)
@@ -288,5 +311,11 @@ func (dev Device) callMethodDo(endpoint string, method interface{}) (*http.Respo
 		soap.AddWSSecurity(dev.params.Username, dev.params.Password)
 	}
 
-	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
+	return soap, nil
+}
+
+func (dev Device) parseAndGetEndpoint(method any) (string, error) {
+	pkgPath := strings.Split(reflect.TypeOf(method).PkgPath(), "/")
+	pkg := strings.ToLower(pkgPath[len(pkgPath)-1])
+	return dev.getEndpoint(pkg)
 }

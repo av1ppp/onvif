@@ -45,7 +45,7 @@ func CallWithLogging_GetCertificatesStatus(ctx context.Context, logger *logx.Log
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCertificatesStatus")
 	} 

@@ -45,7 +45,7 @@ func CallWithLogging_GetAccessPolicy(ctx context.Context, logger *logx.Logger, d
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.GetAccessPolicyResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAccessPolicy")
 	} 

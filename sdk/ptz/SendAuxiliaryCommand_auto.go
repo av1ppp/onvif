@@ -45,7 +45,7 @@ func CallWithLogging_SendAuxiliaryCommand(ctx context.Context, logger *logx.Logg
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := dev.CallMethodWithLogging(logger, request)
 	if err != nil {
 		return reply.Body.SendAuxiliaryCommandResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SendAuxiliaryCommand")
 	} 
