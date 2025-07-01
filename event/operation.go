@@ -96,6 +96,10 @@ type PullMessages struct {
 	MessageLimit xsd.Int      `xml:"tev:MessageLimit"`
 }
 
+type PullMessagesHeader struct {
+	To xsd.AnyURI `xml:"wsa:To"`
+}
+
 // PullMessagesResponse response type
 type PullMessagesResponse struct {
 	CurrentTime         CurrentTime
