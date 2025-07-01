@@ -1,7 +1,7 @@
 package api
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -148,7 +148,7 @@ func callNecessaryMethod(serviceName, methodName, acceptedData, username, passwo
 		return "", errors.Annotate(err, "SendSoap")
 	}
 
-	rsp, err := ioutil.ReadAll(servResp.Body)
+	rsp, err := io.ReadAll(servResp.Body)
 	if err != nil {
 		return "", errors.Annotate(err, "ReadAll")
 	}
@@ -322,7 +322,7 @@ func mapProcessing(mapVar []map[string]string) []map[string]string {
 				mapVar = append(mapVar[:indx], mapVar[indx+1:]...)
 				indx--
 			}
-			if strings.Index(value, ",attr") != -1 {
+			if strings.Contains(value, ",attr") {
 				mapVar = append(mapVar[:indx], mapVar[indx+1:]...)
 				indx--
 			}
