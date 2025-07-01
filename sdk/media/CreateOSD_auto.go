@@ -24,9 +24,14 @@ func CreateOSD(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.
 	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.CreateOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateOSD")
-	} 
+	}
 
-	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	logger := dev.GetLogger()
+	if logger != nil {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateOSD")
+	} else {
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	}
 	if err != nil {
 		return reply.Body.CreateOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateOSD")
 	}

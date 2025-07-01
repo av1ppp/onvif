@@ -24,9 +24,14 @@ func SetHostname(ctx context.Context, dev *onvif.Device, request *onvif.Req[devi
 	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.SetHostnameResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHostname")
-	} 
+	}
 
-	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	logger := dev.GetLogger()
+	if logger != nil {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHostname")
+	} else {
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	}
 	if err != nil {
 		return reply.Body.SetHostnameResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHostname")
 	}

@@ -24,9 +24,14 @@ func GetVideoSourceConfiguration(ctx context.Context, dev *onvif.Device, request
 	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetVideoSourceConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetVideoSourceConfiguration")
-	} 
+	}
 
-	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	logger := dev.GetLogger()
+	if logger != nil {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetVideoSourceConfiguration")
+	} else {
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	}
 	if err != nil {
 		return reply.Body.GetVideoSourceConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetVideoSourceConfiguration")
 	}

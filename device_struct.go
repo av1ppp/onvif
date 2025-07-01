@@ -87,6 +87,11 @@ type DeviceParams struct {
 	Username   string
 	Password   string
 	HttpClient *http.Client
+	Logger     *logx.Logger
+}
+
+func (self *Device) GetLogger() *logx.Logger {
+	return self.params.Logger
 }
 
 // GetServices return available endpoints
@@ -284,8 +289,8 @@ func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
 		soap.AddHeaderContent(element)
 	}
 
-	if request.Logger != nil {
-		request.Logger.Debug("sending soap message",
+	if dev.params.Logger != nil {
+		dev.params.Logger.Debug("sending soap message",
 			logx.String("endpoint", endpoint),
 			logx.String("message", soap.String()))
 	}

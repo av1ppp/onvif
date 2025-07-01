@@ -24,9 +24,14 @@ func GetSystemBackup(ctx context.Context, dev *onvif.Device, request *onvif.Req[
 	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemBackup")
-	} 
+	}
 
-	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	logger := dev.GetLogger()
+	if logger != nil {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSystemBackup")
+	} else {
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	}
 	if err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemBackup")
 	}

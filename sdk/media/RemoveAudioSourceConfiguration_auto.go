@@ -24,9 +24,14 @@ func RemoveAudioSourceConfiguration(ctx context.Context, dev *onvif.Device, requ
 	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.RemoveAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveAudioSourceConfiguration")
-	} 
+	}
 
-	err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	logger := dev.GetLogger()
+	if logger != nil {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemoveAudioSourceConfiguration")
+	} else {
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+	}
 	if err != nil {
 		return reply.Body.RemoveAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveAudioSourceConfiguration")
 	}
