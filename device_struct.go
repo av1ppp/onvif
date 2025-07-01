@@ -284,9 +284,9 @@ func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
 
 			return nil, errors.Common.Wrap(err, "failed to marshal header (2)")
 		}
-		element := doc.Root()
 
-		soap.AddHeaderContent(element)
+		children := doc.Root().ChildElements()
+		soap.AddHeaderContents(children)
 	}
 
 	if dev.params.Logger != nil {
