@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_SetDynamicDNS(ctx context.Context, dev *onvif.Device, request device.S
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetDynamicDNS")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetDynamicDNS")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDynamicDNS")
+	}
+}
+
+// CallWithLogging_SetDynamicDNS works like Call_SetDynamicDNS but also logs the response body.
+func CallWithLogging_SetDynamicDNS(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.SetDynamicDNS) (device.SetDynamicDNSResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetDynamicDNSResponse device.SetDynamicDNSResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetDynamicDNS")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetDynamicDNS")
 		return reply.Body.SetDynamicDNSResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetDynamicDNS")
 	}
 }

@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetNetworkDefaultGateway(ctx context.Context, dev *onvif.Device, reque
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetNetworkDefaultGateway")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
+	}
+}
+
+// CallWithLogging_GetNetworkDefaultGateway works like Call_GetNetworkDefaultGateway but also logs the response body.
+func CallWithLogging_GetNetworkDefaultGateway(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetNetworkDefaultGateway) (device.GetNetworkDefaultGatewayResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetNetworkDefaultGatewayResponse device.GetNetworkDefaultGatewayResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNetworkDefaultGateway")
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
 	}
 }

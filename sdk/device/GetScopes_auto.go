@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetScopes(ctx context.Context, dev *onvif.Device, request device.GetSc
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetScopes")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetScopes")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetScopes")
+	}
+}
+
+// CallWithLogging_GetScopes works like Call_GetScopes but also logs the response body.
+func CallWithLogging_GetScopes(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetScopes) (device.GetScopesResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetScopesResponse device.GetScopesResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetScopesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetScopes")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetScopes")
 		return reply.Body.GetScopesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetScopes")
 	}
 }

@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetNTP(ctx context.Context, dev *onvif.Device, request device.GetNTP) 
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetNTPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNTP")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetNTP")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetNTPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNTP")
+	}
+}
+
+// CallWithLogging_GetNTP works like Call_GetNTP but also logs the response body.
+func CallWithLogging_GetNTP(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetNTP) (device.GetNTPResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetNTPResponse device.GetNTPResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetNTPResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNTP")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetNTP")
 		return reply.Body.GetNTPResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetNTP")
 	}
 }

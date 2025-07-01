@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetCertificatesStatus(ctx context.Context, dev *onvif.Device, request 
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCertificatesStatus")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetCertificatesStatus")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCertificatesStatus")
+	}
+}
+
+// CallWithLogging_GetCertificatesStatus works like Call_GetCertificatesStatus but also logs the response body.
+func CallWithLogging_GetCertificatesStatus(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetCertificatesStatus) (device.GetCertificatesStatusResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetCertificatesStatusResponse device.GetCertificatesStatusResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCertificatesStatus")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCertificatesStatus")
 		return reply.Body.GetCertificatesStatusResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCertificatesStatus")
 	}
 }

@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_RemoveAudioOutputConfiguration(ctx context.Context, dev *onvif.Device,
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.RemoveAudioOutputConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveAudioOutputConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "RemoveAudioOutputConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.RemoveAudioOutputConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveAudioOutputConfiguration")
+	}
+}
+
+// CallWithLogging_RemoveAudioOutputConfiguration works like Call_RemoveAudioOutputConfiguration but also logs the response body.
+func CallWithLogging_RemoveAudioOutputConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.RemoveAudioOutputConfiguration) (media.RemoveAudioOutputConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			RemoveAudioOutputConfigurationResponse media.RemoveAudioOutputConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.RemoveAudioOutputConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemoveAudioOutputConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemoveAudioOutputConfiguration")
 		return reply.Body.RemoveAudioOutputConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemoveAudioOutputConfiguration")
 	}
 }

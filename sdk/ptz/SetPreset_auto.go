@@ -5,6 +5,8 @@ package ptz
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/ptz"
@@ -23,7 +25,24 @@ func Call_SetPreset(ctx context.Context, dev *onvif.Device, request ptz.SetPrese
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetPresetResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetPreset")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetPreset")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetPresetResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetPreset")
+	}
+}
+
+// CallWithLogging_SetPreset works like Call_SetPreset but also logs the response body.
+func CallWithLogging_SetPreset(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request ptz.SetPreset) (ptz.SetPresetResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetPresetResponse ptz.SetPresetResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetPresetResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetPreset")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetPreset")
 		return reply.Body.SetPresetResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetPreset")
 	}
 }

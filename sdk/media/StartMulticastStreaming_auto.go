@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_StartMulticastStreaming(ctx context.Context, dev *onvif.Device, reques
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.StartMulticastStreamingResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "StartMulticastStreaming")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "StartMulticastStreaming")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.StartMulticastStreamingResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StartMulticastStreaming")
+	}
+}
+
+// CallWithLogging_StartMulticastStreaming works like Call_StartMulticastStreaming but also logs the response body.
+func CallWithLogging_StartMulticastStreaming(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.StartMulticastStreaming) (media.StartMulticastStreamingResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			StartMulticastStreamingResponse media.StartMulticastStreamingResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.StartMulticastStreamingResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "StartMulticastStreaming")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "StartMulticastStreaming")
 		return reply.Body.StartMulticastStreamingResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "StartMulticastStreaming")
 	}
 }

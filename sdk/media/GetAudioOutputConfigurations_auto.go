@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_GetAudioOutputConfigurations(ctx context.Context, dev *onvif.Device, r
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetAudioOutputConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurations")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetAudioOutputConfigurations")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetAudioOutputConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurations")
+	}
+}
+
+// CallWithLogging_GetAudioOutputConfigurations works like Call_GetAudioOutputConfigurations but also logs the response body.
+func CallWithLogging_GetAudioOutputConfigurations(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetAudioOutputConfigurations) (media.GetAudioOutputConfigurationsResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetAudioOutputConfigurationsResponse media.GetAudioOutputConfigurationsResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetAudioOutputConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurations")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioOutputConfigurations")
 		return reply.Body.GetAudioOutputConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurations")
 	}
 }

@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_GetStreamUri(ctx context.Context, dev *onvif.Device, request media.Get
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetStreamUri")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetStreamUri")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetStreamUri")
+	}
+}
+
+// CallWithLogging_GetStreamUri works like Call_GetStreamUri but also logs the response body.
+func CallWithLogging_GetStreamUri(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetStreamUri) (media.GetStreamUriResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetStreamUriResponse media.GetStreamUriResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetStreamUri")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetStreamUri")
 		return reply.Body.GetStreamUriResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetStreamUri")
 	}
 }

@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetPkcs10Request(ctx context.Context, dev *onvif.Device, request devic
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetPkcs10Request")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetPkcs10Request")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPkcs10Request")
+	}
+}
+
+// CallWithLogging_GetPkcs10Request works like Call_GetPkcs10Request but also logs the response body.
+func CallWithLogging_GetPkcs10Request(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetPkcs10Request) (device.GetPkcs10RequestResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetPkcs10RequestResponse device.GetPkcs10RequestResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetPkcs10Request")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetPkcs10Request")
 		return reply.Body.GetPkcs10RequestResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetPkcs10Request")
 	}
 }

@@ -5,6 +5,8 @@ package ptz
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/ptz"
@@ -23,7 +25,24 @@ func Call_GetCompatibleConfigurations(ctx context.Context, dev *onvif.Device, re
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetCompatibleConfigurations")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
+	}
+}
+
+// CallWithLogging_GetCompatibleConfigurations works like Call_GetCompatibleConfigurations but also logs the response body.
+func CallWithLogging_GetCompatibleConfigurations(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request ptz.GetCompatibleConfigurations) (ptz.GetCompatibleConfigurationsResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetCompatibleConfigurationsResponse ptz.GetCompatibleConfigurationsResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleConfigurations")
 		return reply.Body.GetCompatibleConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleConfigurations")
 	}
 }

@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_GetAudioEncoderConfiguration(ctx context.Context, dev *onvif.Device, r
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioEncoderConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetAudioEncoderConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioEncoderConfiguration")
+	}
+}
+
+// CallWithLogging_GetAudioEncoderConfiguration works like Call_GetAudioEncoderConfiguration but also logs the response body.
+func CallWithLogging_GetAudioEncoderConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetAudioEncoderConfiguration) (media.GetAudioEncoderConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetAudioEncoderConfigurationResponse media.GetAudioEncoderConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioEncoderConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioEncoderConfiguration")
 		return reply.Body.GetAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioEncoderConfiguration")
 	}
 }

@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_GetCompatibleAudioEncoderConfigurations(ctx context.Context, dev *onvi
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleAudioEncoderConfigurations")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetCompatibleAudioEncoderConfigurations")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleAudioEncoderConfigurations")
+	}
+}
+
+// CallWithLogging_GetCompatibleAudioEncoderConfigurations works like Call_GetCompatibleAudioEncoderConfigurations but also logs the response body.
+func CallWithLogging_GetCompatibleAudioEncoderConfigurations(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetCompatibleAudioEncoderConfigurations) (media.GetCompatibleAudioEncoderConfigurationsResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetCompatibleAudioEncoderConfigurationsResponse media.GetCompatibleAudioEncoderConfigurationsResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleAudioEncoderConfigurations")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCompatibleAudioEncoderConfigurations")
 		return reply.Body.GetCompatibleAudioEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCompatibleAudioEncoderConfigurations")
 	}
 }

@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetSystemSupportInformation(ctx context.Context, dev *onvif.Device, re
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetSystemSupportInformationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemSupportInformation")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetSystemSupportInformation")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetSystemSupportInformationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemSupportInformation")
+	}
+}
+
+// CallWithLogging_GetSystemSupportInformation works like Call_GetSystemSupportInformation but also logs the response body.
+func CallWithLogging_GetSystemSupportInformation(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetSystemSupportInformation) (device.GetSystemSupportInformationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetSystemSupportInformationResponse device.GetSystemSupportInformationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetSystemSupportInformationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemSupportInformation")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSystemSupportInformation")
 		return reply.Body.GetSystemSupportInformationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemSupportInformation")
 	}
 }

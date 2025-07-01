@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetWsdlUrl(ctx context.Context, dev *onvif.Device, request device.GetW
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetWsdlUrl")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetWsdlUrl")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetWsdlUrl")
+	}
+}
+
+// CallWithLogging_GetWsdlUrl works like Call_GetWsdlUrl but also logs the response body.
+func CallWithLogging_GetWsdlUrl(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetWsdlUrl) (device.GetWsdlUrlResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetWsdlUrlResponse device.GetWsdlUrlResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetWsdlUrl")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetWsdlUrl")
 		return reply.Body.GetWsdlUrlResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetWsdlUrl")
 	}
 }

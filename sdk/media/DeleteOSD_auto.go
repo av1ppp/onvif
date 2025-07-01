@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_DeleteOSD(ctx context.Context, dev *onvif.Device, request media.Delete
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.DeleteOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteOSD")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "DeleteOSD")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.DeleteOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteOSD")
+	}
+}
+
+// CallWithLogging_DeleteOSD works like Call_DeleteOSD but also logs the response body.
+func CallWithLogging_DeleteOSD(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.DeleteOSD) (media.DeleteOSDResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			DeleteOSDResponse media.DeleteOSDResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.DeleteOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "DeleteOSD")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "DeleteOSD")
 		return reply.Body.DeleteOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "DeleteOSD")
 	}
 }

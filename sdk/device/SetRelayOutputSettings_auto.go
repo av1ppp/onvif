@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_SetRelayOutputSettings(ctx context.Context, dev *onvif.Device, request
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetRelayOutputSettings")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
+	}
+}
+
+// CallWithLogging_SetRelayOutputSettings works like Call_SetRelayOutputSettings but also logs the response body.
+func CallWithLogging_SetRelayOutputSettings(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.SetRelayOutputSettings) (device.SetRelayOutputSettingsResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetRelayOutputSettingsResponse device.SetRelayOutputSettingsResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetRelayOutputSettings")
 		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
 	}
 }

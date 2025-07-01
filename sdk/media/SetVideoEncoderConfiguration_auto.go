@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_SetVideoEncoderConfiguration(ctx context.Context, dev *onvif.Device, r
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoEncoderConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetVideoEncoderConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoEncoderConfiguration")
+	}
+}
+
+// CallWithLogging_SetVideoEncoderConfiguration works like Call_SetVideoEncoderConfiguration but also logs the response body.
+func CallWithLogging_SetVideoEncoderConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.SetVideoEncoderConfiguration) (media.SetVideoEncoderConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetVideoEncoderConfigurationResponse media.SetVideoEncoderConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoEncoderConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetVideoEncoderConfiguration")
 		return reply.Body.SetVideoEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoEncoderConfiguration")
 	}
 }

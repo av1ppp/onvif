@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetSystemBackup(ctx context.Context, dev *onvif.Device, request device
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemBackup")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetSystemBackup")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemBackup")
+	}
+}
+
+// CallWithLogging_GetSystemBackup works like Call_GetSystemBackup but also logs the response body.
+func CallWithLogging_GetSystemBackup(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetSystemBackup) (device.GetSystemBackupResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetSystemBackupResponse device.GetSystemBackupResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetSystemBackup")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetSystemBackup")
 		return reply.Body.GetSystemBackupResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetSystemBackup")
 	}
 }

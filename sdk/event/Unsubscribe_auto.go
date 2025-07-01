@@ -5,6 +5,8 @@ package event
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/event"
@@ -23,7 +25,24 @@ func Call_Unsubscribe(ctx context.Context, dev *onvif.Device, request event.Unsu
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.UnsubscribeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "Unsubscribe")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "Unsubscribe")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.UnsubscribeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Unsubscribe")
+	}
+}
+
+// CallWithLogging_Unsubscribe works like Call_Unsubscribe but also logs the response body.
+func CallWithLogging_Unsubscribe(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request event.Unsubscribe) (event.UnsubscribeResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			UnsubscribeResponse event.UnsubscribeResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.UnsubscribeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "Unsubscribe")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "Unsubscribe")
 		return reply.Body.UnsubscribeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "Unsubscribe")
 	}
 }

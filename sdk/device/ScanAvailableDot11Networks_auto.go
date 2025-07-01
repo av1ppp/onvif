@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_ScanAvailableDot11Networks(ctx context.Context, dev *onvif.Device, req
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "ScanAvailableDot11Networks")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
+	}
+}
+
+// CallWithLogging_ScanAvailableDot11Networks works like Call_ScanAvailableDot11Networks but also logs the response body.
+func CallWithLogging_ScanAvailableDot11Networks(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.ScanAvailableDot11Networks) (device.ScanAvailableDot11NetworksResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			ScanAvailableDot11NetworksResponse device.ScanAvailableDot11NetworksResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "ScanAvailableDot11Networks")
 		return reply.Body.ScanAvailableDot11NetworksResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "ScanAvailableDot11Networks")
 	}
 }

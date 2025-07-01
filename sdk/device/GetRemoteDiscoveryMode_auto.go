@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetRemoteDiscoveryMode(ctx context.Context, dev *onvif.Device, request
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetRemoteDiscoveryModeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetRemoteDiscoveryMode")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetRemoteDiscoveryMode")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetRemoteDiscoveryModeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetRemoteDiscoveryMode")
+	}
+}
+
+// CallWithLogging_GetRemoteDiscoveryMode works like Call_GetRemoteDiscoveryMode but also logs the response body.
+func CallWithLogging_GetRemoteDiscoveryMode(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetRemoteDiscoveryMode) (device.GetRemoteDiscoveryModeResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetRemoteDiscoveryModeResponse device.GetRemoteDiscoveryModeResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetRemoteDiscoveryModeResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetRemoteDiscoveryMode")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetRemoteDiscoveryMode")
 		return reply.Body.GetRemoteDiscoveryModeResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetRemoteDiscoveryMode")
 	}
 }

@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_SetVideoAnalyticsConfiguration(ctx context.Context, dev *onvif.Device,
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetVideoAnalyticsConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
+	}
+}
+
+// CallWithLogging_SetVideoAnalyticsConfiguration works like Call_SetVideoAnalyticsConfiguration but also logs the response body.
+func CallWithLogging_SetVideoAnalyticsConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.SetVideoAnalyticsConfiguration) (media.SetVideoAnalyticsConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetVideoAnalyticsConfigurationResponse media.SetVideoAnalyticsConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetVideoAnalyticsConfiguration")
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
 	}
 }

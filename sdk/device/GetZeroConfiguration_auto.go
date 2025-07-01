@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_GetZeroConfiguration(ctx context.Context, dev *onvif.Device, request d
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetZeroConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetZeroConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetZeroConfiguration")
+	}
+}
+
+// CallWithLogging_GetZeroConfiguration works like Call_GetZeroConfiguration but also logs the response body.
+func CallWithLogging_GetZeroConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetZeroConfiguration) (device.GetZeroConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetZeroConfigurationResponse device.GetZeroConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetZeroConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetZeroConfiguration")
 		return reply.Body.GetZeroConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetZeroConfiguration")
 	}
 }

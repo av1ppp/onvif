@@ -5,6 +5,8 @@ package ptz
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/ptz"
@@ -23,7 +25,24 @@ func Call_SetHomePosition(ctx context.Context, dev *onvif.Device, request ptz.Se
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHomePosition")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "SetHomePosition")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHomePosition")
+	}
+}
+
+// CallWithLogging_SetHomePosition works like Call_SetHomePosition but also logs the response body.
+func CallWithLogging_SetHomePosition(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request ptz.SetHomePosition) (ptz.SetHomePositionResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			SetHomePositionResponse ptz.SetHomePositionResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetHomePosition")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetHomePosition")
 		return reply.Body.SetHomePositionResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetHomePosition")
 	}
 }

@@ -5,6 +5,8 @@ package device
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
@@ -23,7 +25,24 @@ func Call_CreateDot1XConfiguration(ctx context.Context, dev *onvif.Device, reque
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "CreateDot1XConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
+	}
+}
+
+// CallWithLogging_CreateDot1XConfiguration works like Call_CreateDot1XConfiguration but also logs the response body.
+func CallWithLogging_CreateDot1XConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.CreateDot1XConfiguration) (device.CreateDot1XConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			CreateDot1XConfigurationResponse device.CreateDot1XConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateDot1XConfiguration")
 		return reply.Body.CreateDot1XConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateDot1XConfiguration")
 	}
 }

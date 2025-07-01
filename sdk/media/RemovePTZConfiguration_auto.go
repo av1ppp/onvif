@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_RemovePTZConfiguration(ctx context.Context, dev *onvif.Device, request
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.RemovePTZConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemovePTZConfiguration")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "RemovePTZConfiguration")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.RemovePTZConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemovePTZConfiguration")
+	}
+}
+
+// CallWithLogging_RemovePTZConfiguration works like Call_RemovePTZConfiguration but also logs the response body.
+func CallWithLogging_RemovePTZConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.RemovePTZConfiguration) (media.RemovePTZConfigurationResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			RemovePTZConfigurationResponse media.RemovePTZConfigurationResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.RemovePTZConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemovePTZConfiguration")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemovePTZConfiguration")
 		return reply.Body.RemovePTZConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemovePTZConfiguration")
 	}
 }

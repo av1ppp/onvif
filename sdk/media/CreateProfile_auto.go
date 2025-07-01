@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_CreateProfile(ctx context.Context, dev *onvif.Device, request media.Cr
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "CreateProfile")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
+	}
+}
+
+// CallWithLogging_CreateProfile works like Call_CreateProfile but also logs the response body.
+func CallWithLogging_CreateProfile(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.CreateProfile) (media.CreateProfileResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			CreateProfileResponse media.CreateProfileResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateProfile")
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
 	}
 }

@@ -5,6 +5,8 @@ package ptz
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/ptz"
@@ -23,7 +25,24 @@ func Call_RemovePresetTour(ctx context.Context, dev *onvif.Device, request ptz.R
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.RemovePresetTourResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemovePresetTour")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "RemovePresetTour")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.RemovePresetTourResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemovePresetTour")
+	}
+}
+
+// CallWithLogging_RemovePresetTour works like Call_RemovePresetTour but also logs the response body.
+func CallWithLogging_RemovePresetTour(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request ptz.RemovePresetTour) (ptz.RemovePresetTourResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			RemovePresetTourResponse ptz.RemovePresetTourResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.RemovePresetTourResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "RemovePresetTour")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "RemovePresetTour")
 		return reply.Body.RemovePresetTourResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "RemovePresetTour")
 	}
 }

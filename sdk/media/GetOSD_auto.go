@@ -5,6 +5,8 @@ package media
 import (
 	"context"
 
+	"github.com/av1ppp/logx"
+
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
@@ -23,7 +25,24 @@ func Call_GetOSD(ctx context.Context, dev *onvif.Device, request media.GetOSD) (
 	if httpReply, err := dev.CallMethod(request); err != nil {
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetOSD")
 	} else {
-		err = sdk.ReadAndParse(ctx, httpReply, &reply, "GetOSD")
+		err = sdk.ReadAndParse(ctx, httpReply, &reply)
+		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetOSD")
+	}
+}
+
+// CallWithLogging_GetOSD works like Call_GetOSD but also logs the response body.
+func CallWithLogging_GetOSD(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetOSD) (media.GetOSDResponse, error) {
+	type Envelope struct {
+		Header struct{}
+		Body   struct {
+			GetOSDResponse media.GetOSDResponse
+		}
+	}
+	var reply Envelope
+	if httpReply, err := dev.CallMethod(request); err != nil {
+		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetOSD")
+	} else {
+		err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetOSD")
 		return reply.Body.GetOSDResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetOSD")
 	}
 }
