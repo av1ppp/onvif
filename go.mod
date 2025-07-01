@@ -6,6 +6,7 @@ require (
 	github.com/av1ppp/logx v0.0.4
 	github.com/beevik/etree v1.1.0
 	github.com/elgs/gostrgen v0.0.0-20161222160715-9d61ae07eeae
+	github.com/fatih/color v1.18.0
 	github.com/gin-gonic/gin v1.7.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/joomcode/errorx v1.2.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/av1ppp/timex v0.0.0-20250110060157-df7670d5ef2f // indirect
-	github.com/fatih/color v1.18.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
