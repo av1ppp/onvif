@@ -2,7 +2,6 @@ package onvif
 
 import (
 	"encoding/xml"
-	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/av1ppp/logx"
 	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/errors"
 	"github.com/av1ppp/onvif/gosoap"
 	"github.com/av1ppp/onvif/networking"
 	wsdiscovery "github.com/av1ppp/onvif/ws-discovery"
@@ -187,10 +187,11 @@ func NewDevice(params DeviceParams) (*Device, error) {
 
 	getCapabilities := device.GetCapabilities{Category: "All"}
 
-	resp, err := dev.CallMethod(getCapabilities)
+	req := Request(getCapabilities)
+	resp, err := Do(dev, req)
 
 	if err != nil || resp.StatusCode != http.StatusOK {
-		return nil, errors.New("camera is not available at " + dev.params.Xaddr + " or it does not support ONVIF services")
+		return nil, errors.Common.New("camera is not available at " + dev.params.Xaddr + " or it does not support ONVIF services")
 	}
 
 	err = dev.getSupportedServices(resp)
@@ -237,7 +238,6 @@ func (dev Device) buildMethodSOAP(msg string) (gosoap.SoapMessage, error) {
 
 // getEndpoint functions get the target service endpoint in a better way
 func (dev Device) getEndpoint(endpoint string) (string, error) {
-
 	// common condition, endpointMark in map we use this.
 	if endpointURL, bFound := dev.endpoints[endpoint]; bFound {
 		return endpointURL, nil
@@ -253,41 +253,42 @@ func (dev Device) getEndpoint(endpoint string) (string, error) {
 			return endpointURL, nil
 		}
 	}
-	return endpointURL, errors.New("target endpoint service not found")
+	return endpointURL, errors.Common.New("target endpoint service not found")
 }
 
-// CallMethod function call an method, defined <method> struct.
-// You should use Authenticate method to call authorized requests.
-func (dev Device) CallMethod(method any) (*http.Response, error) {
-	endpoint, err := dev.parseAndGetEndpoint(method)
+func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
+	endpoint, err := dev.parseAndGetEndpoint(request.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	soap, err := dev.prepareSoap(method)
+	soap, err := dev.prepareSoap(request.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
-}
+	if request.Header != nil {
+		headerBytes, err := xml.MarshalIndent(request.Header, "  ", "    ")
+		if err != nil {
+			return nil, errors.Common.Wrap(err, "failed to marshal header (1)")
+		}
 
-// CallMethod function call an method, defined <method> struct.
-// You should use Authenticate method to call authorized requests.
-func (dev Device) CallMethodWithLogging(logger *logx.Logger, method any) (*http.Response, error) {
-	endpoint, err := dev.parseAndGetEndpoint(method)
-	if err != nil {
-		return nil, err
+		doc := etree.NewDocument()
+		if err := doc.ReadFromString(string(headerBytes)); err != nil {
+			//log.Println("Got error")
+
+			return nil, errors.Common.Wrap(err, "failed to marshal header (2)")
+		}
+		element := doc.Root()
+
+		soap.AddHeaderContent(element)
 	}
 
-	soap, err := dev.prepareSoap(method)
-	if err != nil {
-		return nil, err
+	if request.Logger != nil {
+		request.Logger.Debug("sending soap message",
+			logx.String("endpoint", endpoint),
+			logx.String("message", soap.String()))
 	}
-
-	logger.Debug("sending soap message",
-		logx.String("endpoint", endpoint),
-		logx.String("message", soap.String()))
 
 	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
 }

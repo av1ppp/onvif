@@ -5,16 +5,14 @@ package media
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_GetVideoSourceConfigurations forwards the call to dev.CallMethod() then parses the payload of the reply as a GetVideoSourceConfigurationsResponse.
-func Call_GetVideoSourceConfigurations(ctx context.Context, dev *onvif.Device, request media.GetVideoSourceConfigurations) (media.GetVideoSourceConfigurationsResponse, error) {
+// GetVideoSourceConfigurations forwards the call to onvif.Do then parses the payload of the reply as a GetVideoSourceConfigurationsResponse.
+func GetVideoSourceConfigurations(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.GetVideoSourceConfigurations]) (media.GetVideoSourceConfigurationsResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_GetVideoSourceConfigurations(ctx context.Context, dev *onvif.Device, r
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetVideoSourceConfigurations")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.GetVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetVideoSourceConfigurations")
-	}
-	return reply.Body.GetVideoSourceConfigurationsResponse, nil
-}
-
-// CallWithLogging_GetVideoSourceConfigurations works like Call_GetVideoSourceConfigurations but also logs the response body.
-func CallWithLogging_GetVideoSourceConfigurations(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetVideoSourceConfigurations) (media.GetVideoSourceConfigurationsResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			GetVideoSourceConfigurationsResponse media.GetVideoSourceConfigurationsResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.GetVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetVideoSourceConfigurations")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetVideoSourceConfigurations")
 	if err != nil {
 		return reply.Body.GetVideoSourceConfigurationsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetVideoSourceConfigurations")
 	}

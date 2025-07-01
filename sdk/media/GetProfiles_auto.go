@@ -5,16 +5,14 @@ package media
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_GetProfiles forwards the call to dev.CallMethod() then parses the payload of the reply as a GetProfilesResponse.
-func Call_GetProfiles(ctx context.Context, dev *onvif.Device, request media.GetProfiles) (media.GetProfilesResponse, error) {
+// GetProfiles forwards the call to onvif.Do then parses the payload of the reply as a GetProfilesResponse.
+func GetProfiles(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.GetProfiles]) (media.GetProfilesResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_GetProfiles(ctx context.Context, dev *onvif.Device, request media.GetP
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetProfilesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetProfiles")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.GetProfilesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetProfiles")
-	}
-	return reply.Body.GetProfilesResponse, nil
-}
-
-// CallWithLogging_GetProfiles works like Call_GetProfiles but also logs the response body.
-func CallWithLogging_GetProfiles(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetProfiles) (media.GetProfilesResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			GetProfilesResponse media.GetProfilesResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.GetProfilesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetProfiles")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetProfiles")
 	if err != nil {
 		return reply.Body.GetProfilesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetProfiles")
 	}

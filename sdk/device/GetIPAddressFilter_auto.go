@@ -5,16 +5,14 @@ package device
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_GetIPAddressFilter forwards the call to dev.CallMethod() then parses the payload of the reply as a GetIPAddressFilterResponse.
-func Call_GetIPAddressFilter(ctx context.Context, dev *onvif.Device, request device.GetIPAddressFilter) (device.GetIPAddressFilterResponse, error) {
+// GetIPAddressFilter forwards the call to onvif.Do then parses the payload of the reply as a GetIPAddressFilterResponse.
+func GetIPAddressFilter(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.GetIPAddressFilter]) (device.GetIPAddressFilterResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_GetIPAddressFilter(ctx context.Context, dev *onvif.Device, request dev
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetIPAddressFilter")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetIPAddressFilter")
-	}
-	return reply.Body.GetIPAddressFilterResponse, nil
-}
-
-// CallWithLogging_GetIPAddressFilter works like Call_GetIPAddressFilter but also logs the response body.
-func CallWithLogging_GetIPAddressFilter(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetIPAddressFilter) (device.GetIPAddressFilterResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			GetIPAddressFilterResponse device.GetIPAddressFilterResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetIPAddressFilter")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetIPAddressFilter")
 	if err != nil {
 		return reply.Body.GetIPAddressFilterResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetIPAddressFilter")
 	}

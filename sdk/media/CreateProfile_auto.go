@@ -5,16 +5,14 @@ package media
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_CreateProfile forwards the call to dev.CallMethod() then parses the payload of the reply as a CreateProfileResponse.
-func Call_CreateProfile(ctx context.Context, dev *onvif.Device, request media.CreateProfile) (media.CreateProfileResponse, error) {
+// CreateProfile forwards the call to onvif.Do then parses the payload of the reply as a CreateProfileResponse.
+func CreateProfile(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.CreateProfile]) (media.CreateProfileResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_CreateProfile(ctx context.Context, dev *onvif.Device, request media.Cr
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
-	}
-	return reply.Body.CreateProfileResponse, nil
-}
-
-// CallWithLogging_CreateProfile works like Call_CreateProfile but also logs the response body.
-func CallWithLogging_CreateProfile(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.CreateProfile) (media.CreateProfileResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			CreateProfileResponse media.CreateProfileResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "CreateProfile")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "CreateProfile")
 	if err != nil {
 		return reply.Body.CreateProfileResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "CreateProfile")
 	}

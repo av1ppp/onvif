@@ -5,16 +5,14 @@ package device
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_GetCertificates forwards the call to dev.CallMethod() then parses the payload of the reply as a GetCertificatesResponse.
-func Call_GetCertificates(ctx context.Context, dev *onvif.Device, request device.GetCertificates) (device.GetCertificatesResponse, error) {
+// GetCertificates forwards the call to onvif.Do then parses the payload of the reply as a GetCertificatesResponse.
+func GetCertificates(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.GetCertificates]) (device.GetCertificatesResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_GetCertificates(ctx context.Context, dev *onvif.Device, request device
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetCertificatesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCertificates")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.GetCertificatesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCertificates")
-	}
-	return reply.Body.GetCertificatesResponse, nil
-}
-
-// CallWithLogging_GetCertificates works like Call_GetCertificates but also logs the response body.
-func CallWithLogging_GetCertificates(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.GetCertificates) (device.GetCertificatesResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			GetCertificatesResponse device.GetCertificatesResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.GetCertificatesResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCertificates")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetCertificates")
 	if err != nil {
 		return reply.Body.GetCertificatesResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetCertificates")
 	}

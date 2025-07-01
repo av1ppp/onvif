@@ -5,16 +5,14 @@ package device
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/device"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_SetNetworkProtocols forwards the call to dev.CallMethod() then parses the payload of the reply as a SetNetworkProtocolsResponse.
-func Call_SetNetworkProtocols(ctx context.Context, dev *onvif.Device, request device.SetNetworkProtocols) (device.SetNetworkProtocolsResponse, error) {
+// SetNetworkProtocols forwards the call to onvif.Do then parses the payload of the reply as a SetNetworkProtocolsResponse.
+func SetNetworkProtocols(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.SetNetworkProtocols]) (device.SetNetworkProtocolsResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_SetNetworkProtocols(ctx context.Context, dev *onvif.Device, request de
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.SetNetworkProtocolsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetNetworkProtocols")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.SetNetworkProtocolsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetNetworkProtocols")
-	}
-	return reply.Body.SetNetworkProtocolsResponse, nil
-}
-
-// CallWithLogging_SetNetworkProtocols works like Call_SetNetworkProtocols but also logs the response body.
-func CallWithLogging_SetNetworkProtocols(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request device.SetNetworkProtocols) (device.SetNetworkProtocolsResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			SetNetworkProtocolsResponse device.SetNetworkProtocolsResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.SetNetworkProtocolsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetNetworkProtocols")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "SetNetworkProtocols")
 	if err != nil {
 		return reply.Body.SetNetworkProtocolsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "SetNetworkProtocols")
 	}

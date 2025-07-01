@@ -8,7 +8,7 @@ import (
 
 	goonvif "github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/device"
-	sdk "github.com/av1ppp/onvif/sdk/device"
+	sdkdevice "github.com/av1ppp/onvif/sdk/device"
 	"github.com/av1ppp/onvif/xsd/onvif"
 )
 
@@ -31,32 +31,35 @@ func main() {
 		panic(err)
 	}
 
-	//Preparing commands
-	systemDateAndTyme := device.GetSystemDateAndTime{}
-	getCapabilities := device.GetCapabilities{Category: "All"}
-	createUser := device.CreateUsers{
-		User: onvif.User{
-			Username:  "TestUser",
-			Password:  "TestPassword",
-			UserLevel: "User",
-		},
-	}
-
-	//Commands execution
-	systemDateAndTymeResponse, err := sdk.Call_GetSystemDateAndTime(ctx, dev, systemDateAndTyme)
+	// Getting device information
+	systemDateAndTymeResponse, err := sdkdevice.GetSystemDateAndTime(ctx, dev, &goonvif.Req[device.GetSystemDateAndTime]{
+		Body: device.GetSystemDateAndTime{},
+	})
 	if err != nil {
 		log.Println(err)
 	} else {
 		fmt.Println(systemDateAndTymeResponse)
 	}
-	getCapabilitiesResponse, err := sdk.Call_GetCapabilities(ctx, dev, getCapabilities)
+
+	getCapabilitiesResponse, err := sdkdevice.GetCapabilities(ctx, dev, &goonvif.Req[device.GetCapabilities]{
+		Body: device.GetCapabilities{Category: "All"},
+	})
 	if err != nil {
 		log.Println(err)
 	} else {
 		fmt.Println(getCapabilitiesResponse)
 	}
 
-	createUserResponse, err := sdk.Call_CreateUsers(ctx, dev, createUser)
+	// Creating user
+	createUserResponse, err := sdkdevice.CreateUsers(ctx, dev, &goonvif.Req[device.CreateUsers]{
+		Body: device.CreateUsers{
+			User: onvif.User{
+				Username:  "TestUser",
+				Password:  "TestPassword",
+				UserLevel: "User",
+			},
+		},
+	})
 	if err != nil {
 		log.Println(err)
 	} else {

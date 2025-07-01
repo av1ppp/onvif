@@ -5,16 +5,14 @@ package media
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_GetAudioOutputConfigurationOptions forwards the call to dev.CallMethod() then parses the payload of the reply as a GetAudioOutputConfigurationOptionsResponse.
-func Call_GetAudioOutputConfigurationOptions(ctx context.Context, dev *onvif.Device, request media.GetAudioOutputConfigurationOptions) (media.GetAudioOutputConfigurationOptionsResponse, error) {
+// GetAudioOutputConfigurationOptions forwards the call to onvif.Do then parses the payload of the reply as a GetAudioOutputConfigurationOptionsResponse.
+func GetAudioOutputConfigurationOptions(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.GetAudioOutputConfigurationOptions]) (media.GetAudioOutputConfigurationOptionsResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_GetAudioOutputConfigurationOptions(ctx context.Context, dev *onvif.Dev
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
-	}
-	return reply.Body.GetAudioOutputConfigurationOptionsResponse, nil
-}
-
-// CallWithLogging_GetAudioOutputConfigurationOptions works like Call_GetAudioOutputConfigurationOptions but also logs the response body.
-func CallWithLogging_GetAudioOutputConfigurationOptions(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.GetAudioOutputConfigurationOptions) (media.GetAudioOutputConfigurationOptionsResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			GetAudioOutputConfigurationOptionsResponse media.GetAudioOutputConfigurationOptionsResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "GetAudioOutputConfigurationOptions")
 	if err != nil {
 		return reply.Body.GetAudioOutputConfigurationOptionsResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "GetAudioOutputConfigurationOptions")
 	}

@@ -17,16 +17,14 @@ package {{.Package}}
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/{{.StructPackage}}"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_{{.TypeRequest}} forwards the call to dev.CallMethod() then parses the payload of the reply as a {{.TypeReply}}.
-func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.StructPackage}}.{{.TypeRequest}}) ({{.StructPackage}}.{{.TypeReply}}, error) {
+// {{.TypeRequest}} forwards the call to onvif.Do then parses the payload of the reply as a {{.TypeReply}}.
+func {{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request *onvif.Req[{{.StructPackage}}.{{.TypeRequest}}]) ({{.StructPackage}}.{{.TypeReply}}, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -35,34 +33,12 @@ func Call_{{.TypeRequest}}(ctx context.Context, dev *onvif.Device, request {{.St
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
-	}
-	return reply.Body.{{.TypeReply}}, nil
-}
-
-// CallWithLogging_{{.TypeRequest}} works like Call_{{.TypeRequest}} but also logs the response body.
-func CallWithLogging_{{.TypeRequest}}(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request {{.StructPackage}}.{{.TypeRequest}}) ({{.StructPackage}}.{{.TypeReply}}, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			{{.TypeReply}} {{.StructPackage}}.{{.TypeReply}}
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "{{.TypeRequest}}")
 	if err != nil {
 		return reply.Body.{{.TypeReply}}, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "{{.TypeRequest}}")
 	}

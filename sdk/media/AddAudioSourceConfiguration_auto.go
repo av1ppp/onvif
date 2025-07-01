@@ -5,16 +5,14 @@ package media
 import (
 	"context"
 
-	"github.com/av1ppp/logx"
-
 	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/sdk"
 	"github.com/av1ppp/onvif/media"
 	"github.com/av1ppp/onvif/errors"
 )
 
-// Call_AddAudioSourceConfiguration forwards the call to dev.CallMethod() then parses the payload of the reply as a AddAudioSourceConfigurationResponse.
-func Call_AddAudioSourceConfiguration(ctx context.Context, dev *onvif.Device, request media.AddAudioSourceConfiguration) (media.AddAudioSourceConfigurationResponse, error) {
+// AddAudioSourceConfiguration forwards the call to onvif.Do then parses the payload of the reply as a AddAudioSourceConfigurationResponse.
+func AddAudioSourceConfiguration(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.AddAudioSourceConfiguration]) (media.AddAudioSourceConfigurationResponse, error) {
 	type Envelope struct {
 		Header struct{}
 		Body   struct {
@@ -23,34 +21,12 @@ func Call_AddAudioSourceConfiguration(ctx context.Context, dev *onvif.Device, re
 	}
 	var reply Envelope
 
-	httpReply, err := dev.CallMethod(request)
+	httpReply, err := onvif.Do(dev, request)
 	if err != nil {
 		return reply.Body.AddAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddAudioSourceConfiguration")
 	} 
 
 	err = sdk.ReadAndParse(ctx, httpReply, &reply)
-	if err != nil {
-		return reply.Body.AddAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddAudioSourceConfiguration")
-	}
-	return reply.Body.AddAudioSourceConfigurationResponse, nil
-}
-
-// CallWithLogging_AddAudioSourceConfiguration works like Call_AddAudioSourceConfiguration but also logs the response body.
-func CallWithLogging_AddAudioSourceConfiguration(ctx context.Context, logger *logx.Logger, dev *onvif.Device, request media.AddAudioSourceConfiguration) (media.AddAudioSourceConfigurationResponse, error) {
-	type Envelope struct {
-		Header struct{}
-		Body   struct {
-			AddAudioSourceConfigurationResponse media.AddAudioSourceConfigurationResponse
-		}
-	}
-	var reply Envelope
-
-	httpReply, err := dev.CallMethodWithLogging(logger, request)
-	if err != nil {
-		return reply.Body.AddAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "AddAudioSourceConfiguration")
-	} 
-
-	err = sdk.ReadAndParseWithLogging(ctx, logger, httpReply, &reply, "AddAudioSourceConfiguration")
 	if err != nil {
 		return reply.Body.AddAudioSourceConfigurationResponse, errors.Common.Wrap(err, "failed to read and parse reply").WithProperty(errors.PropMethod, "AddAudioSourceConfiguration")
 	}
