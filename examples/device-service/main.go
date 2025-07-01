@@ -32,18 +32,16 @@ func main() {
 	}
 
 	// Getting device information
-	systemDateAndTymeResponse, err := sdkdevice.GetSystemDateAndTime(ctx, dev, &goonvif.Req[device.GetSystemDateAndTime]{
-		Body: device.GetSystemDateAndTime{},
-	})
+	systemDateAndTymeResponse, err := sdkdevice.GetSystemDateAndTime(ctx, dev, goonvif.Request(device.GetSystemDateAndTime{}))
 	if err != nil {
 		log.Println(err)
 	} else {
 		fmt.Println(systemDateAndTymeResponse)
 	}
 
-	getCapabilitiesResponse, err := sdkdevice.GetCapabilities(ctx, dev, &goonvif.Req[device.GetCapabilities]{
-		Body: device.GetCapabilities{Category: "All"},
-	})
+	getCapabilitiesResponse, err := sdkdevice.GetCapabilities(ctx, dev, goonvif.Request(device.GetCapabilities{
+		Category: "All",
+	}))
 	if err != nil {
 		log.Println(err)
 	} else {
@@ -51,15 +49,13 @@ func main() {
 	}
 
 	// Creating user
-	createUserResponse, err := sdkdevice.CreateUsers(ctx, dev, &goonvif.Req[device.CreateUsers]{
-		Body: device.CreateUsers{
-			User: onvif.User{
-				Username:  "TestUser",
-				Password:  "TestPassword",
-				UserLevel: "User",
-			},
+	createUserResponse, err := sdkdevice.CreateUsers(ctx, dev, goonvif.Request(device.CreateUsers{
+		User: onvif.User{
+			Username:  "TestUser",
+			Password:  "TestPassword",
+			UserLevel: "User",
 		},
-	})
+	}))
 	if err != nil {
 		log.Println(err)
 	} else {

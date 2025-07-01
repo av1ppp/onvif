@@ -28,9 +28,7 @@ func client() {
 
 	log.Printf("output %+v", dev.GetServices())
 
-	res, err := onvif.Do(dev, &onvif.Req[device.GetUsers]{
-		Body: device.GetUsers{},
-	})
+	res, err := onvif.Do(dev, onvif.Request(device.GetUsers{}))
 	bs, _ := io.ReadAll(res.Body)
 	log.Printf("output %+v %s", res.StatusCode, bs)
 }
