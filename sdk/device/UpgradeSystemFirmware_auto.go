@@ -6,10 +6,11 @@ package device
 
 import (
 	"context"
+
+	"github.com/av1ppp/onvif"
+	"github.com/av1ppp/onvif/device"
+	"github.com/av1ppp/onvif/sdk"
 	"github.com/juju/errors"
-	"github.com/use-go/onvif"
-	"github.com/use-go/onvif/sdk"
-	"github.com/use-go/onvif/device"
 )
 
 // Call_UpgradeSystemFirmware forwards the call to dev.CallMethod() then parses the payload of the reply as a UpgradeSystemFirmwareResponse.
