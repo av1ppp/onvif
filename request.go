@@ -1,8 +1,9 @@
 package onvif
 
 type Req[B any] struct {
-	Body   B
-	Header any
+	Body     B
+	Header   any
+	Endpoint string
 }
 
 func Request[T any](body T) *Req[T] {

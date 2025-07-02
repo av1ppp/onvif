@@ -262,9 +262,13 @@ func (dev Device) getEndpoint(endpoint string) (string, error) {
 }
 
 func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
-	endpoint, err := dev.parseAndGetEndpoint(request.Body)
-	if err != nil {
-		return nil, err
+	endpoint := request.Endpoint
+	if endpoint == "" {
+		if endpoint_, err := dev.parseAndGetEndpoint(request.Body); err != nil {
+			return nil, err
+		} else {
+			endpoint = endpoint_
+		}
 	}
 
 	soap, err := dev.prepareSoap(request.Body)
