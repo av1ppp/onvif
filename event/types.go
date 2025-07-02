@@ -32,10 +32,18 @@ type MessageNotification struct {
 }
 
 type MessageNotificationHolderType struct {
-	UtcTime           xsd.DateTime       `xml:",attr"`
-	PropertyOperation xsd.String         `xml:",attr"`
-	Source            []onvif.SimpleItem `xml:"Source>SimpleItem"`
-	Data              onvif.SimpleItem   `xml:"Data>SimpleItem"` // is it may be array ?
+	UtcTime           xsd.DateTime `xml:",attr"`
+	PropertyOperation xsd.String   `xml:",attr"`
+	Source            Source       `xml:",omitempty"`
+	Data              Data         `xml:",omitempty"`
+}
+
+type Source struct {
+	SimpleItem []onvif.SimpleItem `xml:",omitempty"`
+}
+
+type Data struct {
+	SimpleItem []onvif.SimpleItem `xml:",omitempty"`
 }
 
 // ActionType for AttributedURIType
