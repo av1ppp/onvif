@@ -102,9 +102,9 @@ type PullMessagesHeader struct {
 
 // PullMessagesResponse response type
 type PullMessagesResponse struct {
-	CurrentTime          CurrentTime
-	TerminationTime      TerminationTime
-	NotificationMessages []NotificationMessage `xml:"NotificationMessage"`
+	CurrentTime         CurrentTime
+	TerminationTime     TerminationTime
+	NotificationMessage []NotificationMessage `xml:"NotificationMessage,omitempty"`
 }
 
 // PullMessagesFaultResponse response type
