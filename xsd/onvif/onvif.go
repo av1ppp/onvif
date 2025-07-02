@@ -517,6 +517,37 @@ type ElementItem struct {
 	Name string `xml:"Name,attr"`
 }
 
+type ConfigRequest struct {
+	Name       string           `xml:",attr,omitempty"`
+	Type       *xsd.QName       `xml:",attr,omitempty"`
+	Parameters *ItemListRequest `xml:"onvif:Parameters,omitempty"`
+}
+
+type ItemListRequest struct {
+	SimpleItem  []SimpleItemRequest  `xml:"onvif:SimpleItem,omitempty"`
+	ElementItem []ElementItemRequest `xml:"onvif:ElementItem,omitempty"`
+	Extension   *ItemListExtension   `xml:"onvif:Extension,omitempty"`
+}
+
+type ElementItemRequest struct {
+	Name     string    `xml:",attr,omitempty"`
+	Polyline *Polyline `xml:"onvif:Polyline,omitempty"`
+}
+
+type Polyline struct {
+	Point []Point `xml:"onvif:Point,omitempty"`
+}
+
+type Point struct {
+	X *xsd.String `xml:"x,attr,omitempty"`
+	Y *xsd.String `xml:"onvif:y,attr,omitempty"`
+}
+
+type SimpleItemRequest struct {
+	Name  string            `xml:",attr,omitempty"`
+	Value xsd.AnySimpleType `xml:",attr,omitempty"`
+}
+
 type ItemListExtension xsd.AnyType
 
 type AnalyticsEngineConfigurationExtension xsd.AnyType
