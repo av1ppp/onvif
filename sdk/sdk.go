@@ -79,7 +79,12 @@ func validate(httpReply *http.Response, data []byte) error {
 				WithProperty(errors.PropStatusCode, httpReply.StatusCode)
 		}
 
-		msg := "(" + string(failt.Body.Fault.Code.Value) + ") " + string(failt.Body.Fault.Reason.Text.Text)
+		text := string(failt.Body.Fault.Reason.Text.Text)
+		if text == "" {
+			text = "<empty>"
+		}
+
+		msg := "(" + string(failt.Body.Fault.Code.Value) + ") " + text
 
 		return errors.Soap.New(msg).
 			WithProperty(errors.PropStatusCode, httpReply.StatusCode).
