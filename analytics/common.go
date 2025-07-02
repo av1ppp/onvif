@@ -259,17 +259,17 @@ type RuleDescription struct {
 type ItemListExtension xsd.AnyType
 
 type RuleOptions struct {
-	RuleType                  *xsd.String
-	Name                      *xsd.String `xml:",attr"`
-	Type                      *xsd.String `xml:",attr"`
-	MinOccurs                 *xsd.String `xml:"minOccurs,attr"`
-	MaxOccurs                 *xsd.String `xml:"maxOccurs,attr"`
-	AnalyticsModule           *xsd.String
-	IntRange                  *IntRange
-	StringItems               *StringItems
-	PolygonOptions            *PolygonOptions
-	MotionRegionConfigOptions *MotionRegionConfigOptions
-	StringList                *xsd.String
+	RuleType                  xsd.String
+	Name                      xsd.String `xml:",attr"`
+	Type                      xsd.String `xml:",attr"`
+	MinOccurs                 xsd.String `xml:"minOccurs,attr"`
+	MaxOccurs                 xsd.String `xml:"maxOccurs,attr"`
+	AnalyticsModule           xsd.String
+	IntRange                  IntRange
+	StringItems               StringItems
+	PolygonOptions            PolygonOptions
+	MotionRegionConfigOptions MotionRegionConfigOptions
+	StringList                xsd.String
 }
 
 type PolygonOptions struct {
