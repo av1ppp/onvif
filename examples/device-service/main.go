@@ -5,9 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 
-	goonvif "github.com/av1ppp/onvif"
+	"github.com/av1ppp/onvif"
 	"github.com/av1ppp/onvif/device"
 	sdkdevice "github.com/av1ppp/onvif/sdk/device"
 )
@@ -19,7 +18,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&addr, "addr", "192.168.13.14:80", "Device address")
+	flag.StringVar(&addr, "addr", "192.168.12.34:80", "Device address")
 	flag.StringVar(&username, "username", "admin", "Device username")
 	flag.StringVar(&password, "password", "admin", "Device password")
 }
@@ -30,19 +29,17 @@ func main() {
 	ctx := context.Background()
 
 	// Getting an camera instance
-	dev, err := goonvif.NewDevice(goonvif.DeviceParams{
-		Xaddr:      addr,
-		Username:   username,
-		Password:   password,
-		HttpClient: new(http.Client),
-		// Logger:     logging.New(),
+	dev, err := onvif.NewDevice(onvif.DeviceParams{
+		Xaddr:    addr,
+		Username: username,
+		Password: password,
 	})
 	if err != nil {
 		panic(err)
 	}
 
 	// Getting device information
-	systemDateAndTymeResponse, err := sdkdevice.GetSystemDateAndTime(ctx, dev, goonvif.Request(device.GetSystemDateAndTime{}))
+	systemDateAndTymeResponse, err := sdkdevice.GetSystemDateAndTime(ctx, dev, onvif.Request(device.GetSystemDateAndTime{}))
 	if err != nil {
 		log.Println(err)
 	} else {
@@ -50,7 +47,7 @@ func main() {
 	}
 
 	// Check error handling
-	getCapabilitiesResponse, err := sdkdevice.GetCapabilities(ctx, dev, goonvif.Request(device.GetCapabilities{
+	getCapabilitiesResponse, err := sdkdevice.GetCapabilities(ctx, dev, onvif.Request(device.GetCapabilities{
 		Category: "WRONG",
 	}))
 	if err != nil {
