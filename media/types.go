@@ -287,7 +287,7 @@ type GetVideoAnalyticsConfigurations struct {
 }
 
 type GetVideoAnalyticsConfigurationsResponse struct {
-	Configurations onvif.VideoAnalyticsConfiguration
+	Configurations []onvif.VideoAnalyticsConfiguration
 }
 
 type GetMetadataConfigurations struct {
