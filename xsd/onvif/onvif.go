@@ -487,19 +487,19 @@ type AudioEncoding xsd.String
 
 type VideoAnalyticsConfiguration struct {
 	ConfigurationEntity
-	AnalyticsEngineConfiguration AnalyticsEngineConfiguration `xml:"onvif:AnalyticsEngineConfiguration"`
-	RuleEngineConfiguration      RuleEngineConfiguration      `xml:"onvif:RuleEngineConfiguration"`
+	AnalyticsEngineConfiguration AnalyticsEngineConfiguration `xml:"AnalyticsEngineConfiguration"` // `xml:"onvif:AnalyticsEngineConfiguration"`
+	RuleEngineConfiguration      RuleEngineConfiguration      `xml:"RuleEngineConfiguration"`      // `xml:"onvif:RuleEngineConfiguration"`
 }
 
 type AnalyticsEngineConfiguration struct {
-	AnalyticsModule []Config                              `xml:"onvif:AnalyticsModule"`
-	Extension       AnalyticsEngineConfigurationExtension `xml:"onvif:Extension"`
+	AnalyticsModule []Config                              `xml:"AnalyticsModule"` // `xml:"onvif:AnalyticsModule"`
+	Extension       AnalyticsEngineConfigurationExtension `xml:"Extension"`       // `xml:"onvif:Extension"`
 }
 
 type Config struct {
 	Name       string    `xml:"Name,attr"`
 	Type       xsd.QName `xml:"Type,attr"`
-	Parameters ItemList  `xml:"onvif:Parameters"`
+	Parameters ItemList  `xml:"onvif:Parameters"` // TODO remove 'onvif'?
 }
 
 type ItemList struct {
@@ -553,8 +553,8 @@ type ItemListExtension xsd.AnyType
 type AnalyticsEngineConfigurationExtension xsd.AnyType
 
 type RuleEngineConfiguration struct {
-	Rule      []Config                         `xml:"onvif:Rule"`
-	Extension RuleEngineConfigurationExtension `xml:"onvif:Extension"`
+	Rule      []Config                         `xml:"Rule"`      // `xml:"onvif:Rule"`
+	Extension RuleEngineConfigurationExtension `xml:"Extension"` // `xml:"onvif:Extension"`
 }
 
 type RuleEngineConfigurationExtension xsd.AnyType
