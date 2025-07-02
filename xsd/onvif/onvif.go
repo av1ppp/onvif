@@ -492,7 +492,7 @@ type VideoAnalyticsConfiguration struct {
 }
 
 type AnalyticsEngineConfiguration struct {
-	AnalyticsModule Config                                `xml:"onvif:AnalyticsModule"`
+	AnalyticsModule []Config                              `xml:"onvif:AnalyticsModule"`
 	Extension       AnalyticsEngineConfigurationExtension `xml:"onvif:Extension"`
 }
 
@@ -553,7 +553,7 @@ type ItemListExtension xsd.AnyType
 type AnalyticsEngineConfigurationExtension xsd.AnyType
 
 type RuleEngineConfiguration struct {
-	Rule      Config                           `xml:"onvif:Rule"`
+	Rule      []Config                         `xml:"onvif:Rule"`
 	Extension RuleEngineConfigurationExtension `xml:"onvif:Extension"`
 }
 
