@@ -21,7 +21,7 @@ func GetMetadataConfigurations(ctx context.Context, dev *onvif.Device, request *
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetMetadataConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetMetadataConfigurations")
 	}

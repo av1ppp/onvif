@@ -21,7 +21,7 @@ func GetCompatibleAudioOutputConfigurations(ctx context.Context, dev *onvif.Devi
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetCompatibleAudioOutputConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleAudioOutputConfigurations")
 	}

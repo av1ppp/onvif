@@ -21,7 +21,7 @@ func GetOSDs(ctx context.Context, dev *onvif.Device, request *onvif.Req[media.Ge
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetOSDsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetOSDs")
 	}

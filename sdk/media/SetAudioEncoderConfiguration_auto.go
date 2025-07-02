@@ -21,7 +21,7 @@ func SetAudioEncoderConfiguration(ctx context.Context, dev *onvif.Device, reques
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.SetAudioEncoderConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetAudioEncoderConfiguration")
 	}

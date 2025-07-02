@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"path"
@@ -139,7 +140,7 @@ func callNecessaryMethod(logger *logx.Logger, serviceName, methodName, acceptedD
 	soap.AddRootNamespaces(onvif.Xlmns)
 	soap.AddWSSecurity(username, password)
 
-	servResp, err := networking.SendSoap(new(http.Client), endpoint, soap.String())
+	servResp, err := networking.SendSoap(context.Background(), new(http.Client), endpoint, soap.String())
 	if err != nil {
 		return "", commonErrors.Wrap(err, "failed to networking.SendSoap")
 	}

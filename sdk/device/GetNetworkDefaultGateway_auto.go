@@ -21,7 +21,7 @@ func GetNetworkDefaultGateway(ctx context.Context, dev *onvif.Device, request *o
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetNetworkDefaultGatewayResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetNetworkDefaultGateway")
 	}

@@ -21,7 +21,7 @@ func SetVideoAnalyticsConfiguration(ctx context.Context, dev *onvif.Device, requ
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.SetVideoAnalyticsConfigurationResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetVideoAnalyticsConfiguration")
 	}

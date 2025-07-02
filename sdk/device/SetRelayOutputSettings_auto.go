@@ -21,7 +21,7 @@ func SetRelayOutputSettings(ctx context.Context, dev *onvif.Device, request *onv
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.SetRelayOutputSettingsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "SetRelayOutputSettings")
 	}

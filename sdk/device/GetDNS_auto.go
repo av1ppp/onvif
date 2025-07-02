@@ -21,7 +21,7 @@ func GetDNS(ctx context.Context, dev *onvif.Device, request *onvif.Req[device.Ge
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetDNSResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetDNS")
 	}

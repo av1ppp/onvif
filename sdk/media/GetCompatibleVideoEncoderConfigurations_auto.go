@@ -21,7 +21,7 @@ func GetCompatibleVideoEncoderConfigurations(ctx context.Context, dev *onvif.Dev
 	}
 	var reply Envelope
 
-	httpReply, err := onvif.Do(dev, request)
+	httpReply, err := onvif.Do(ctx, dev, request)
 	if err != nil {
 		return reply.Body.GetCompatibleVideoEncoderConfigurationsResponse, errors.Common.Wrap(err, "failed to call method").WithProperty(errors.PropMethod, "GetCompatibleVideoEncoderConfigurations")
 	}

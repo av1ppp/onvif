@@ -1,6 +1,7 @@
 package onvif
 
 import (
+	"context"
 	"encoding/xml"
 	"io"
 	"net/http"
@@ -193,7 +194,7 @@ func NewDevice(params DeviceParams) (*Device, error) {
 	getCapabilities := device.GetCapabilities{Category: "All"}
 
 	req := Request(getCapabilities)
-	resp, err := Do(dev, req)
+	resp, err := Do(context.Background(), dev, req)
 
 	if err != nil || resp.StatusCode != http.StatusOK {
 		return nil, errors.Common.New("camera is not available at " + dev.params.Xaddr + " or it does not support ONVIF services")
@@ -261,7 +262,7 @@ func (dev Device) getEndpoint(endpoint string) (string, error) {
 	return endpointURL, errors.Common.New("target endpoint service not found")
 }
 
-func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
+func Do[B any](ctx context.Context, dev *Device, request *Req[B]) (*http.Response, error) {
 	endpoint := request.Endpoint
 	if endpoint == "" {
 		if endpoint_, err := dev.parseAndGetEndpoint(request.Body); err != nil {
@@ -299,7 +300,7 @@ func Do[B any](dev *Device, request *Req[B]) (*http.Response, error) {
 			logx.String("message", soap.String()))
 	}
 
-	return networking.SendSoap(dev.params.HttpClient, endpoint, soap.String())
+	return networking.SendSoap(ctx, dev.params.HttpClient, endpoint, soap.String())
 }
 
 func (dev Device) prepareSoap(method any) (gosoap.SoapMessage, error) {
