@@ -1,6 +1,6 @@
 // Code generated : DO NOT EDIT.
 
-package device
+package sdkdevice
 
 import (
 	"context"

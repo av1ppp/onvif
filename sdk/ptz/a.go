@@ -1,4 +1,4 @@
-package ptz
+package sdkptz
 
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen ptz ptz GetServiceCapabilities
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen ptz ptz GetNodes

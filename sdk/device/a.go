@@ -1,4 +1,4 @@
-package device
+package sdkdevice
 
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen device device GetServices
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen device device GetServiceCapabilities

@@ -12,7 +12,7 @@ import (
 
 var mainTemplate = `// Code generated : DO NOT EDIT.
 
-package {{.Package}}
+package sdk{{.Package}}
 
 import (
 	"context"

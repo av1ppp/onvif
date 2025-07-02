@@ -1,4 +1,4 @@
-package analytics
+package sdkanalytics
 
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen analytics analytics CreateAnalyticsModules
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen analytics analytics DeleteAnalyticsModules

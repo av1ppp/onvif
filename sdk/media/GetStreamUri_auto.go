@@ -1,6 +1,6 @@
 // Code generated : DO NOT EDIT.
 
-package media
+package sdkmedia
 
 import (
 	"context"

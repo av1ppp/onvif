@@ -1,4 +1,4 @@
-package event
+package sdkevent
 
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen event event CreatePullPointSubscription
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen event event GetEventProperties

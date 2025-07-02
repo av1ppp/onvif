@@ -1,6 +1,6 @@
 // Code generated : DO NOT EDIT.
 
-package event
+package sdkevent
 
 import (
 	"context"

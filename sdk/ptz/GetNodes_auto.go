@@ -1,6 +1,6 @@
 // Code generated : DO NOT EDIT.
 
-package ptz
+package sdkptz
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package media
+package sdkmedia
 
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen media media GetServiceCapabilities
 //go:generate go run github.com/av1ppp/onvif/sdk/codegen media media GetVideoSources

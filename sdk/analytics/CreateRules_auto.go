@@ -1,6 +1,6 @@
 // Code generated : DO NOT EDIT.
 
-package analytics
+package sdkanalytics
 
 import (
 	"context"
