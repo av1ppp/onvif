@@ -365,8 +365,8 @@ type VideoSourceConfiguration struct {
 
 type ConfigurationEntity struct {
 	Token    ReferenceToken `xml:"token,attr"`
-	Name     Name           `xml:"onvif:Name"`
-	UseCount int            `xml:"onvif:UseCount"`
+	Name     Name           `xml:"Name"`     // `xml:"onvif:Name"`
+	UseCount int            `xml:"UseCount"` // `xml:"onvif:UseCount"`
 }
 
 type VideoSourceConfigurationExtension struct {
