@@ -2,7 +2,7 @@
 > This library is intended solely for my personal use, so I may not fix bugs, actively support
 > the project, and do ongoing maintenance.
 
-# Onvif
+# ONVIF
 
 Simple management of onvif IP-devices cameras. onvif is an implementation of ONVIF protocol for
 managing onvif IP devices. The purpose of this library is convenient and easy management of IP
@@ -68,4 +68,23 @@ device := onvif.NewDevice(onvif.DeviceParams{
 ### Example
 
 You can find a simple example of using in the
-[examples/device-service/main.go](./examples/device-service/main.go)
+[examples/device-service/main.go](./examples/device-service/main.go).
+
+## ONVIF Specifications
+
+Almost all documentation you can find [here](https://www.onvif.org/profiles/specifications).
+
+### Service specifications
+
+- [Analytics](http://www.onvif.org/ver20/analytics/wsdl)
+- [Device](http://www.onvif.org/ver10/device/wsdl)
+- [Event](http://www.onvif.org/ver10/event/wsdl)
+- [Media](http://www.onvif.org/ver10/media/wsdl)
+- [PTZ](http://www.onvif.org/ver20/ptz/wsdl)
+- [Imaging](http://www.onvif.org/ver20/imaging/wsdl)
+
+### Core specifications
+
+- [ONVIF Core Specification (2024)](./docs/ONVIF-Core-Specification-2024.pdf)
+- [ONVIF Core Specification (2019)](./docs/ONVIF-Core-Specification-2019.pdf)
+- [ONVIF Core Specification (2016)](./docs/ONVIF-Core-Specification-2016.pdf)
