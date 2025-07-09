@@ -204,6 +204,7 @@ func (tp Duration) NewDateTime(years, months, days, hours, minutes, seconds stri
 	return Duration(i.ISO8601Duration())
 }
 
+// * Old version of DateTime
 /*
 DateTime values may be viewed as objects with integer-valued year, month, day, hour
 and minute properties, a decimal-valued second property, and a boolean timezoned property.
@@ -227,15 +228,19 @@ More info: https://www.w3.org/TR/xmlschema-2/#dateTime
 TODO: decide good type for time with proper format
 TODO: process restrictions
 */
-type DateTime AnySimpleType
+// type DateTime AnySimpleType
 
-/*
-Construct an instance of xsd dateTime type
-*/
-func (tp DateTime) NewDateTime(time time.Time) DateTime {
-	return DateTime(time.Format("2002-10-10T12:00:00-05:00"))
+// func (tp DateTime) NewDateTime(time time.Time) DateTime {
+// 	return DateTime(time.Format("2002-10-10T12:00:00-05:00"))
+// }
+
+// * New version of DateTime
+type DateTime struct {
+	Time Time `xml:"Time"`
+	Date Date `xml:"Date"`
 }
 
+// * Old version of Time
 /*
 Time represents an instant of time that recurs every day.
 The ·value space· of time is the space of time of day values
@@ -256,15 +261,20 @@ More info: https://www.w3.org/TR/xmlschema-2/#time
 
 TODO: process restrictions
 */
-type Time AnySimpleType
+// type Time AnySimpleType
 
-/*
-Construct an instance of xsd time type
-*/
-func (tp DateTime) NewTime(time time.Time) DateTime {
-	return DateTime(time.Format("15:04:05"))
+// func (tp DateTime) NewTime(time time.Time) DateTime {
+// 	return DateTime(time.Format("15:04:05"))
+// }
+
+// * New version of Time
+type Time struct {
+	Hour   Int `xml:"Hour"`
+	Minute Int `xml:"Minute"`
+	Second Int `xml:"Second"`
 }
 
+// * Old version of Date
 /*
 The ·value space· of date consists of top-open intervals of
 exactly one day in length on the timelines of dateTime, beginning
@@ -275,13 +285,17 @@ For nontimezoned values, the top-open intervals disjointly
 cover the nontimezoned timeline, one per day. For timezoned
 values, the intervals begin at every minute and therefore overlap.
 */
-type Date AnySimpleType
+// type Date AnySimpleType
 
-/*
-Construct an instance of xsd date type
-*/
-func (tp Date) NewDate(time time.Time) Date {
-	return Date(time.Format("2004-04-12-05:00"))
+// func (tp Date) NewDate(time time.Time) Date {
+// 	return Date(time.Format("2004-04-12-05:00"))
+// }
+
+// * New version of Date
+type Date struct {
+	Year  Int `xml:"Year"`
+	Month Int `xml:"Month"`
+	Day   Int `xml:"Day"`
 }
 
 /*

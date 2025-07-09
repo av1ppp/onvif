@@ -1162,7 +1162,7 @@ type OnvifVersion struct {
 type SetDateTimeType xsd.String
 
 type TimeZone struct {
-	TZ xsd.Token `xml:"onvif:TZ"`
+	TZ xsd.Token `xml:"TZ"`
 }
 
 type SystemDateTime struct {
